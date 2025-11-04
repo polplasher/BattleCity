@@ -1,41 +1,32 @@
-const gamePrefs=
+const gamePrefs =
 {
-    gameWidth:960,
-    gameHeight:540,
-    level1Width:1280, //40*32
-    level1Height:800, //25*32
-    GRAVITY:1000,
-    HERO_SPEED:200,
-    HERO_JUMP:-450,
-    ENEMY_SPEED:150
+    // Gameplay constants
 }
 
 var config =
 {
     type: Phaser.AUTO,
-    width: gamePrefs.gameWidth,
-    height: gamePrefs.gameHeight,
-    scene:[level1], //array con las escenas
+    width: 128,
+    height: 256,
+    // Enter scenes 
+    // scene: [],
     render:
     {
-        pixelArt:true
+        pixelArt: true
     },
     physics:
     {
-        default:'arcade',
+        default: 'arcade',
         arcade:
         {
-            gravity:{y:gamePrefs.GRAVITY},
-            debug:true
+            gravity: { y: 0 },
         }
     },
     scale:
     {
-        mode:Phaser.Scale.FIT,
-        autoCenter:Phaser.Scale.CENTER_BOTH,
-        width:gamePrefs.gameWidth/2,
-        height:gamePrefs.gameHeight/2
-    }   
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    }
 }
 
-var juego = new Phaser.Game(config);
+var game = new Phaser.Game(config)
