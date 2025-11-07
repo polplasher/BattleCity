@@ -1,45 +1,62 @@
-class playerTank extends Phaser.Scene{
-  constructor(){ super({ key:'playerTank' }); this.facing='down'; }
+class playerTank extends Phaser.Scene {
+  constructor(){
+    super({ key: "playerTank" });
+    this.facing  = 'down';
+    this.lastShot = 0;
+  }
 
   preload(){
     this.cameras.main.setBackgroundColor('#111');
-    this.load.spritesheet('tank', 'assets/tanks/yellow/tank1_yellow.png', {
+    
+      this.load.spritesheet('tank','assets/tanks/yellow/tank1_yellow.png', {
       frameWidth: 16, frameHeight: 16
+    });
+
+  //bullet del player
+    this.load.spritesheet('bullet', 'assets/tanks/bullet.png', {
+      frameWidth: 8, frameHeight: 16
     });
   }
 
   create(){
+    // Animaciones del tanque
     this.anims.create({ 
       key:'tank_up',   
-       frames:this.anims.generateFrameNumbers('tank',{start:0,end:1}),
-        frameRate: (gamePrefs?.TANK_FR||10),
+       frames:this.anims.generateFrameNumbers('tank',{ start:0, end:1 }), 
+       frameRate:10, 
        repeat:-1 });
 
-    this.anims.create({
-       key:'tank_left', 
-        frames:this.anims.generateFrameNumbers('tank',{start:2,end:3}), 
-        frameRate: (gamePrefs?.TANK_FR||10), 
+    this.anims.create({ 
+      key:'tank_left', 
+       frames:this.anims.generateFrameNumbers('tank',{ start:2, end:3 }),
+        frameRate:10, 
         repeat:-1 });
 
     this.anims.create({ 
-      key:'tank_down',  
-      frames:this.anims.generateFrameNumbers('tank',{start:4,end:5}),
-       frameRate: (gamePrefs?.TANK_FR||10), 
-       repeat:-1 });
-
-    this.anims.create({
-       key:'tank_right', 
-       frames:this.anims.generateFrameNumbers('tank',{start:6,end:7}), 
-       frameRate: (gamePrefs?.TANK_FR||10),
+      key:'tank_down', 
+       frames:this.anims.generateFrameNumbers('tank',{ start:4, end:5 }),
+        frameRate:10, 
         repeat:-1 });
+    this.anims.create({ key:'tank_right', 
+      frames:this.anims.generateFrameNumbers('tank',{ start:6, end:7 }), 
+      frameRate:10, 
+      repeat:-1 });
 
-    this.hero = this.add.sprite(this.scale.width/2, this.scale.height/2, 'tank', 4).setScale(2);
+    // Tanque
+    this.hero = this.physics.add.sprite(this.scale.width/2, this.scale.height/2, 'tank', 4).setScale(2);
+    
 
+   
+    // Pool de balas (enable preUpdate en el prefab)
+    this.bulletPool = this.physics.add.group({ runChildUpdate: true });
+
+    
+    this.input.keyboard.on('keyup-SPACE', () => this.createBullet());
    
   }
 
   update(){
- const speed = (gamePrefs && gamePrefs.TANK_SPEED ? gamePrefs.TANK_SPEED : 60) / 60;
+    const speed = (gamePrefs && gamePrefs.TANK_SPEED ? gamePrefs.TANK_SPEED : 60) / 60;
   const keys = this.input.keyboard.addKeys('W,A,S,D');  
 
   if (keys.D.isDown) {
@@ -67,5 +84,50 @@ class playerTank extends Phaser.Scene{
   }
 
   }
-  }
 
+  createBullet(){
+    // Límite de balas activas (1 por poner algo)
+    const activeCount = this.bulletPool.getMatching('active', true).length;
+    if (activeCount >= (gamePrefs.MAX_PLAYER_BULLETS || 1)) return;
+
+    // Cooldown
+    const now = this.time.now;
+    if (now - this.lastShot < (gamePrefs.FIRE_COOLDOWN || 180)) return;
+    this.lastShot = now;
+
+    const speed  = (gamePrefs && gamePrefs.BULLET_SPEED) || 220;
+    const offset = 12; // por delante del cañón aprox
+
+    // Frame por dirección
+    const frameByFacing = { up:0, left:1, down:2, right:3 };
+
+    let x = this.hero.x, y = this.hero.y, vx = 0, vy = 0;
+    let frame = frameByFacing[this.facing] ?? 2;
+
+    switch (this.facing) {
+      case 'up':    y -= offset; vy = -speed; break;
+      case 'down':  y += offset; vy =  speed; break;
+      case 'left':  x -= offset; vx = -speed; break;
+      case 'right': x += offset; vx =  speed; break;
+      default:      y += offset; vy =  speed;  frame = 2; break;
+    }
+
+    // Pooling
+    let b = this.bulletPool.getFirst(false);
+    if (!b) {
+      b = new bulletPrefab(this, x, y, 'bullet');
+      this.bulletPool.add(b);
+    } else {
+      b.setActive(true).setVisible(true);
+      b.body.reset(x, y);
+    }
+
+    // Ajustes de la bala
+    b.setFrame(frame).setOrigin(0.5, 0.5);
+    if (b.body) {
+      b.body.setAllowGravity(false);
+      b.body.setSize(4, 4, true); // hitbox 4×4 (hay que ver segun las paredes)
+      b.body.setVelocity(vx, vy);
+    }
+  }
+}
