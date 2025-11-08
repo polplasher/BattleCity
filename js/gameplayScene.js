@@ -9,13 +9,53 @@ class gameplayScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#111');
 
     this.load.setPath('assets/sprites');
-    this.load.spritesheet('tank', 'tanks/yellow/tank1_yellow.png', { frameWidth: 16, frameHeight: 16 });
+    this.load.image('bullet', 'tanks/bullet.png');
+    this.load.image('obstacle', 'environment/metalWall.png');
 
+    // Player
+    this.load.spritesheet('tank', 'tanks/yellow/tank1_yellow.png', { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('bullet', 'tanks/bullet.png', { frameWidth: 8, frameHeight: 16 });
   }
 
   create() {
-    // Animaciones del tanque
+    this.loadAnimations();
+
+    // Tanque
+    this.hero = this.physics.add.sprite(this.scale.width / 2, this.scale.height / 2, 'tank', 4);
+
+    // Pool de balas (enable preUpdate en el prefab)
+    this.bulletPool = this.physics.add.group({ runChildUpdate: true });
+
+    // Grupo de obstáculos
+    this.obstacles = this.physics.add.group();
+
+    // Crear algunos obstáculos de ejemplo
+    this.createObstacles();
+
+    // COLISIONES
+    this.physics.add.collider(this.hero, this.obstacles); // Tank vs Obstáculos
+    this.physics.add.collider(this.bulletPool, this.obstacles, this.bulletHitObstacle, null, this); // Balas vs Obstáculos
+
+
+    this.input.keyboard.on('keyup-SPACE', () => this.createBullet());
+  }
+
+  createObstacles() {
+    // Crear obstáculos en posiciones específicas
+    const obstaclePositions = [
+      { x: 100, y: 100 },
+      { x: 200, y: 150 },
+      { x: 150, y: 200 },
+      { x: 300, y: 120 }
+    ];
+
+    obstaclePositions.forEach(pos => {
+      const obstacle = new obstaclePrefab(this, pos.x, pos.y, 'obstacle');
+      this.obstacles.add(obstacle);
+    });
+  }
+
+  loadAnimations() {
     this.anims.create({
       key: 'tank_up',
       frames: this.anims.generateFrameNumbers('tank', { start: 0, end: 1 }),
@@ -36,20 +76,13 @@ class gameplayScene extends Phaser.Scene {
       frameRate: 10,
       repeat: -1
     });
+
     this.anims.create({
       key: 'tank_right',
       frames: this.anims.generateFrameNumbers('tank', { start: 6, end: 7 }),
       frameRate: 10,
       repeat: -1
     });
-
-    // Tanque
-    this.hero = this.physics.add.sprite(this.scale.width / 2, this.scale.height / 2, 'tank', 4);
-
-    // Pool de balas (enable preUpdate en el prefab)
-    this.bulletPool = this.physics.add.group({ runChildUpdate: true });
-
-    this.input.keyboard.on('keyup-SPACE', () => this.createBullet());
   }
 
   update() {
