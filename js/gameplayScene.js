@@ -44,7 +44,7 @@ class gameplayScene extends Phaser.Scene {
     });
 
     // Tanque
-    this.hero = this.physics.add.sprite(this.scale.width / 2, this.scale.height / 2, 'tank', 4).setScale(2);
+    this.hero = this.physics.add.sprite(this.scale.width / 2, this.scale.height / 2, 'tank', 4);
 
     // Pool de balas (enable preUpdate en el prefab)
     this.bulletPool = this.physics.add.group({ runChildUpdate: true });

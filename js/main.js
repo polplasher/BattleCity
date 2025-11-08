@@ -7,8 +7,8 @@ const gamePrefs =
 var config =
 {
     type: Phaser.AUTO,
-    width: 128,
-    height: 256,
+    width: 384,
+    height: 260,
     // Enter scenes 
     scene: [gameplayScene],
     render:
