@@ -9,7 +9,6 @@ class gameplayScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#111');
 
     this.load.setPath('assets/sprites');
-    this.load.image('bullet', 'tanks/bullet.png');
     this.load.image('obstacle', 'environment/metalWall.png');
 
     // Player
@@ -27,7 +26,7 @@ class gameplayScene extends Phaser.Scene {
     this.bulletPool = this.physics.add.group({ runChildUpdate: true });
 
     // Grupo de obstáculos
-    this.obstacles = this.physics.add.group();
+    this.obstacles = this.physics.add.staticGroup();
 
     // Crear algunos obstáculos de ejemplo
     this.createObstacles();
@@ -35,7 +34,6 @@ class gameplayScene extends Phaser.Scene {
     // COLISIONES
     this.physics.add.collider(this.hero, this.obstacles); // Tank vs Obstáculos
     this.physics.add.collider(this.bulletPool, this.obstacles, this.bulletHitObstacle, null, this); // Balas vs Obstáculos
-
 
     this.input.keyboard.on('keyup-SPACE', () => this.createBullet());
   }
@@ -86,25 +84,26 @@ class gameplayScene extends Phaser.Scene {
   }
 
   update() {
-    const speed = (gamePrefs && gamePrefs.TANK_SPEED ? gamePrefs.TANK_SPEED : 60) / 60;
     const keys = this.input.keyboard.addKeys('W,A,S,D');
 
+    this.hero.setVelocity(0, 0);
+
     if (keys.D.isDown) {
-      this.hero.x += speed;
+      this.hero.setVelocityX(gamePrefs.TANK_SPEED);
       this.hero.anims.play('tank_right', true);
       this.facing = 'right';
     } else if (keys.A.isDown) {
-      this.hero.x -= speed;
+      this.hero.setVelocityX(-gamePrefs.TANK_SPEED);
       this.hero.anims.play('tank_left', true);
       this.facing = 'left';
     }
     else if (keys.W.isDown) {
-      this.hero.y -= speed;
+      this.hero.setVelocityY(-gamePrefs.TANK_SPEED);
       this.hero.anims.play('tank_up', true);
       this.facing = 'up';
     }
     else if (keys.S.isDown) {
-      this.hero.y += speed;
+      this.hero.setVelocityY(gamePrefs.TANK_SPEED);
       this.hero.anims.play('tank_down', true);
       this.facing = 'down';
     }
