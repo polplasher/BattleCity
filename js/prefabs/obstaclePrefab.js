@@ -8,7 +8,7 @@ class obstaclePrefab extends Phaser.Physics.Arcade.Sprite {
     }
 
     takeDamage(amount = 1) {
-        this.health = (this.health || 1) - amount;
+        this.health = this.health - amount;
         if (this.health <= 0) {
             this.destroy();
         }

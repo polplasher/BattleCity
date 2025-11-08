@@ -1,7 +1,13 @@
 const gamePrefs =
 {
+    // Tank
     TANK_SPEED: 60,
-    TANK_FR: 10,
+    TANK_FRAME_RATE: 10,
+
+    // Bullets
+    BULLET_SPEED: 220,
+    MAX_PLAYER_BULLETS: 1,
+    FIRE_COOLDOWN: 180,
 }
 
 var config =
