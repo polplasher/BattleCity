@@ -1,7 +1,7 @@
 const gamePrefs =
 {
-  TANK_SPEED: 60,
-  TANK_FR: 10,
+    TANK_SPEED: 60,
+    TANK_FR: 10,
 }
 
 var config =
@@ -10,7 +10,7 @@ var config =
     width: 128,
     height: 256,
     // Enter scenes 
-    scene: [playerTank],
+    scene: [gameplayScene],
     render:
     {
         pixelArt: true
