@@ -1,0 +1,20 @@
+import { GAME_SIZE } from '../../core/constants.js';
+
+class Bullet extends Phaser.GameObjects.Sprite {
+  constructor(scene, x, y, key = 'bullet') {
+    super(scene, x, y, key);
+    scene.add.existing(this);
+  }
+
+  preUpdate(time, delta) {
+    super.preUpdate(time, delta);
+
+    if (this.x < 0 || this.x > GAME_SIZE.WIDTH || this.y < 0 || this.y > GAME_SIZE.HEIGHT) {
+      this.setActive(false);
+      this.setVisible(false);
+      if (this.body) this.body.reset(-100, -100);
+    }
+  }
+}
+
+export { Bullet };

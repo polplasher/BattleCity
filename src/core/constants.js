@@ -1,0 +1,43 @@
+export const GAME_SIZE =
+{
+    WIDTH: 384,
+    HEIGHT: 260
+}
+
+export const PHYSICS =
+{
+    TYPE: 'arcade',
+    GRAVITY: 0,
+    DEBUG: true
+}
+
+export const PLAYER = 
+{
+    SPEED: 60,
+    FRAME_RATE: 10,
+
+    // Bullets
+    BULLET_SPEED: 220,
+    FIRE_COOLDOWN: 180,
+    MAX_BULLETS: 1
+}
+
+export const ENEMY = 
+{
+    SPEED: 150,
+    // Si luego cada tipo de enemigo necesita su propia constante:
+    // JUMPER_SPEED: 150,
+    // SLIME_SPEED: 120
+}
+
+export const RENDER = 
+{
+    PIXEL_ART: true
+}
+
+export const SCALE = 
+{
+    MODE: 'FIT',                // Phaser.Scale.FIT
+    AUTO_CENTER: 'CENTER_BOTH', // Phaser.Scale.CENTER_BOTH
+    ZOOM: 2                     //Para pixelart: escala lógica x2 sin deformar
+}
