@@ -28,6 +28,8 @@ export const ENEMY =
     // Si luego cada tipo de enemigo necesita su propia constante:
     // JUMPER_SPEED: 150,
     // SLIME_SPEED: 120
+    DEFAULT_HEALTH: 2 // en verdad son todos 1 menos el blindado 
+    
 }
 
 export const RENDER = 

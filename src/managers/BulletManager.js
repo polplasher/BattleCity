@@ -35,8 +35,23 @@ class BulletManager {
         bullet.setActive(false);
         bullet.setVisible(false);
         if (bullet.body) bullet.body.reset(-100, -100);
-        // obstacle.takeDamage(1);
+       
     }
+
+ 
+    onBulletHitEnemy(bullet, enemy) {
+        //Desactivar la bala 
+        bullet.setActive(false);
+        bullet.setVisible(false);
+        if (bullet.body) bullet.body.reset(-100, -100);
+
+        // Aplicar daño al enemigo
+        
+        if (enemy && typeof enemy.takeDamage === 'function') {
+            enemy.takeDamage(1);
+        }
+    }
+    
 }
 
 export { BulletManager };
