@@ -11,7 +11,7 @@ export const PHYSICS =
     DEBUG: true
 }
 
-export const PLAYER = 
+export const PLAYER =
 {
     SPEED: 60,
     FRAME_RATE: 10,
@@ -22,22 +22,22 @@ export const PLAYER =
     MAX_BULLETS: 1
 }
 
-export const ENEMY = 
+export const ENEMY =
 {
     SPEED: 150,
     // Si luego cada tipo de enemigo necesita su propia constante:
     // JUMPER_SPEED: 150,
     // SLIME_SPEED: 120
     DEFAULT_HEALTH: 2 // en verdad son todos 1 menos el blindado 
-    
+
 }
 
-export const RENDER = 
+export const RENDER =
 {
     PIXEL_ART: true
 }
 
-export const SCALE = 
+export const SCALE =
 {
     MODE: 'FIT',                // Phaser.Scale.FIT
     AUTO_CENTER: 'CENTER_BOTH', // Phaser.Scale.CENTER_BOTH

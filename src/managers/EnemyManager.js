@@ -6,13 +6,11 @@ class EnemyManager {
         this.enemies = scene.physics.add.group();
     }
 
-  //enemigo basico para porbar
-    createEnemy(x, y) { 
-        
-       
-        let enemy = this.enemies.getFirst(false); 
+    // Enemigo basico para porbar
+    createEnemy(x, y) {
+        let enemy = this.enemies.getFirst(false);
 
-        if (enemy) {           
+        if (enemy) {
             enemy.reset(x, y);
         } else {
             enemy = new TankBasic(this.scene, x, y);
@@ -22,13 +20,9 @@ class EnemyManager {
         return enemy;
     }
 
-    getGroup() {
-        return this.enemies;
-    }
+    getGroup() { return this.enemies; }
 
-    destroy() {
-        this.enemies.clear(true, true);
-    }
+    destroy() { this.enemies.clear(true, true); }
 }
 
 export { EnemyManager };

@@ -16,8 +16,7 @@ import { GAME_SIZE, PHYSICS, RENDER, SCALE } from './constants.js';
  * @returns {Phaser.Types.Core.GameConfig} Configuración lista para pasar a new Phaser.Game().
  */
 
-export function buildConfig({ scenes = [] } = {}) 
-{
+export function buildConfig({ scenes = [] } = {}) {
   return {
     type: Phaser.AUTO,
     width: GAME_SIZE.WIDTH,

@@ -1,10 +1,8 @@
-
 class Explosion extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, key = 'explosion_large') {
         super(scene, x, y, key);
         scene.add.existing(this);
 
-       
         this.on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
             this.setActive(false);
             this.setVisible(false);
@@ -15,8 +13,7 @@ class Explosion extends Phaser.GameObjects.Sprite {
         this.setActive(true);
         this.setVisible(true);
         this.setPosition(x, y);
-        
-       
+
         this.anims.play(animKey);
     }
 }
