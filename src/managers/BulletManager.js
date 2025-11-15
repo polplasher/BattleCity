@@ -25,6 +25,10 @@ class BulletManager {
             bullet.body.setVelocity(vx, vy);
         }
 
+        bullet.fragmentsHit = 0;
+        bullet.maxFragments = 2;
+        bullet.hitObstacles = new Set();
+
         return bullet;
     }
 
@@ -32,26 +36,29 @@ class BulletManager {
     getPool() { return this.pool; }
 
     onBulletHitObstacle(bullet, obstacle) {
-        bullet.setActive(false);
-        bullet.setVisible(false);
-        if (bullet.body) bullet.body.reset(-100, -100);
+        if (!bullet.active || bullet.fragmentsHit >= bullet.maxFragments) return;
+        if (bullet.hitObstacles.has(obstacle)) return;
 
-    }
+        bullet.hitObstacles.add(obstacle);
+        obstacle.destroy();
+        bullet.fragmentsHit++;
 
-
-    onBulletHitEnemy(bullet, enemy) {
-        //Desactivar la bala 
-        bullet.setActive(false);
-        bullet.setVisible(false);
-        if (bullet.body) bullet.body.reset(-100, -100);
-
-        // Aplicar daño al enemigo
-
-        if (enemy && typeof enemy.takeDamage === 'function') {
-            enemy.takeDamage(1);
+        if (bullet.fragmentsHit >= bullet.maxFragments) {
+            bullet.setActive(false);
+            bullet.setVisible(false);
+            bullet.body.reset(-100, -100);
+            bullet.hitObstacles.clear();
         }
     }
 
+    onBulletHitEnemy(bullet, enemy) {
+        bullet.setActive(false);
+        bullet.setVisible(false);
+        bullet.body.reset(-100, -100);
+        bullet.hitObstacles.clear();
+
+        enemy.takeDamage(1);
+    }
 }
 
 export { BulletManager };

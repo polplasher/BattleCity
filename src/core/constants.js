@@ -29,7 +29,11 @@ export const ENEMY =
     // JUMPER_SPEED: 150,
     // SLIME_SPEED: 120
     DEFAULT_HEALTH: 2 // en verdad son todos 1 menos el blindado 
+}
 
+export const OBSTACLE =
+{
+    BLOCK_SIZE: 16
 }
 
 export const RENDER =
