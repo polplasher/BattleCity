@@ -1,7 +1,6 @@
 //para probar si funciona el sistema de vidas y explosion
 import { BaseEnemy } from './BaseEnemy.js';
 import { ENEMY } from '../../core/constants.js';
-import { EnemyManager } from '../../managers/EnemyManager.js';
 
 class TankBasic extends BaseEnemy {
     constructor(scene, x, y) {
@@ -21,6 +20,8 @@ class TankBasic extends BaseEnemy {
         this.setImmovable(true);
 
         this.start = true;
+
+        this.createAnimations();
     }
 
 
@@ -38,6 +39,29 @@ class TankBasic extends BaseEnemy {
         
     }
 
+    createAnimations() {
+        // Solo crear si no existen (para múltiples instancias)
+        if (this.scene.anims.exists('enemy_up')) return;
+
+        const animConfigs = [
+            { key: 'enemy_up', start: 0, end: 1 },
+            { key: 'enemy_left', start: 2, end: 3 },
+            { key: 'enemy_down', start: 4, end: 5 },
+            { key: 'enemy_right', start: 6, end: 7 }
+        ];
+
+        animConfigs.forEach(config => {
+            this.scene.anims.create({
+                key: config.key,
+                frames: this.scene.anims.generateFrameNumbers('enemy_tank',
+                    { start: config.start, end: config.end }
+                ),
+                frameRate: 8,
+                repeat: -1
+            });
+        });
+    }
+
     colisionHandler()
     {
         if (this.body.blocked.left || this.body.blocked.right||this.body.blocked.up || this.body.blocked.down)
@@ -48,12 +72,24 @@ class TankBasic extends BaseEnemy {
                 {
                     console.log("Cambio Horizontal");
                     this.body.setVelocity(this.speed * this.direction,0);
+                    if (this.direction === 1)
+                    {
+                        this.anims.play('enemy_right', true);
+                    }else
+                    {
+                        this.anims.play('enemy_left', true);
+                    }
                 }else
                 {
                     console.log("Cambio Vertical");
                     if (Math.random() < 0.5 )  
                     {
-                        this.direction *=-1;
+                        this.direction = -1;
+                        this.anims.play('enemy_up', true);
+                    }else
+                    {
+                        this.direction = 1;
+                        this.anims.play('enemy_down', true);
                     }
                     this.body.setVelocity(0, this.speed * this.direction);
 
@@ -68,6 +104,7 @@ class TankBasic extends BaseEnemy {
         super.preUpdate(time,delta);
         if (this.start === true) {
             this.body.setVelocity(0,this.speed * this.direction);
+            this.anims.play('enemy_up', true);
             this.start = false;
         }
         this.colisionHandler();

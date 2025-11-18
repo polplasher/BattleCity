@@ -11,6 +11,11 @@ export const PHYSICS =
     DEBUG: true
 }
 
+// export const SYSTEM =
+// {
+//     FRAME_RATE: 10
+// }
+
 export const PLAYER =
 {
     SPEED: 60,
