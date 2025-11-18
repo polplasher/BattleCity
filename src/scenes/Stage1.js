@@ -39,12 +39,17 @@ class Stage1 extends Phaser.Scene {
     //Crear obstáculos
     this.obstacleManager.createFromArray([
       { x: 100, y: 100 }, { x: 200, y: 150 },
-      { x: 150, y: 200 }, { x: 300, y: 120 }
+      { x: 150, y: 200 }, { x: 300, y: 120 },
+      { x: 300, y: 250 }, { x: 318, y: 233 },
+      { x: 250, y: 233 }
     ]);
 
     // Enemigos para probar si funciona (borrar luego)
     this.enemyManager.createEnemy(100, 50);
     this.enemyManager.createEnemy(300, 200);
+
+  // Make enemies collide with obstacles so blocked flags are useful
+  this.physics.add.collider(this.enemyManager.getGroup(), this.obstacleManager.getGroup());
 
     // Animación de explosión
     this.anims.create({

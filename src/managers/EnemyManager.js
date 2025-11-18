@@ -3,7 +3,8 @@ import { TankBasic } from '../entities/enemies/TankBasic.js';
 class EnemyManager {
     constructor(scene) {
         this.scene = scene;
-        this.enemies = scene.physics.add.group();
+        // Ensure child updates run so enemy `preUpdate` is called when grouped
+        this.enemies = scene.physics.add.group({ runChildUpdate: true });
     }
 
     // Enemigo basico para porbar
@@ -14,7 +15,9 @@ class EnemyManager {
             enemy.reset(x, y);
         } else {
             enemy = new TankBasic(this.scene, x, y);
+     
             this.enemies.add(enemy);
+
         }
 
         return enemy;

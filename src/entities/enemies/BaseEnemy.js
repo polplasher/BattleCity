@@ -1,17 +1,22 @@
+import { ENEMY } from '../../core/constants.js';
+
+
 class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
     // Constructor basico para la salud 
     constructor(scene, x, y, key, health) {
+
         super(scene, x, y, key);
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        scene.physics.world.enable(this);
 
         this.health = health;
         this.maxHealth = health;
-
-        this.setCollideWorldBounds(true);
-        this.body.setAllowGravity(false);
-        this.setImmovable(true);
+        this.body.setCollideWorldBounds(true);
+        
+        
+        
     }
 
     // Aplica daño
@@ -44,6 +49,9 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.health = this.maxHealth;
         this.clearTint();
     }
+
+    
+
 }
 
 export { BaseEnemy };

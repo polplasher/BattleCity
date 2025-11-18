@@ -24,7 +24,7 @@ export const PLAYER =
 
 export const ENEMY =
 {
-    SPEED: 150,
+    SPEED: 100,
     // Si luego cada tipo de enemigo necesita su propia constante:
     // JUMPER_SPEED: 150,
     // SLIME_SPEED: 120
