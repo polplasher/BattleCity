@@ -59,6 +59,19 @@ class BulletManager {
 
         enemy.takeDamage(1);
     }
+onBulletHitPlayer(player, bullet) {
+  
+            bullet.setActive(false);
+        bullet.setVisible(false);
+        if (bullet.body) bullet.body.reset(-100, -100);
+        
+       
+        if (bullet.hitObstacles) {
+            bullet.hitObstacles.clear();
+        }
+//aqui poner la logica de la bala al impactar con el player
+        //player.takeDamage(1);
+    }
 }
 
 export { BulletManager };

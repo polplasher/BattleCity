@@ -11,9 +11,6 @@ class TankBasic extends BaseEnemy {
 
         // Aquí se podrá poner su velocidad, IA, etc.
         this.speed = ENEMY.SPEED;
-
-        
-        this.setColliders();
         
         this.body.setAllowGravity(false);
         this.direction = -1;
@@ -21,22 +18,20 @@ class TankBasic extends BaseEnemy {
 
         this.start = true;
 
+        this.bulletManager = null;
+        this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
+
         this.createAnimations();
     }
 
+    setBulletManager(manager) {
+        this.bulletManager = manager;
+    }
 
     reset(x, y) {
         super.reset(x, y);
-    }
-
-    setColliders()
-    {
-        this.scene.physics.add.collider(this, this.scene.obstacleManager.getGroup());
-        if(this.body){
-            console.log("Setting collide world bounds")
-            this.body.setCollideWorldBounds(true);
-        }
-        
+        this.start = true;
+        this.direction = -1;
     }
 
     createAnimations() {
@@ -99,6 +94,27 @@ class TankBasic extends BaseEnemy {
             
         }
     }
+
+    shoot() {
+        if (!this.bulletManager || !this.active) return;
+
+        let vx = 0;
+        let vy = 0;
+        const bSpeed = ENEMY.BULLET_SPEED;
+
+        if (this.body.velocity.x > 0) vx = bSpeed;
+        else if (this.body.velocity.x < 0) vx = -bSpeed;
+        
+        if (this.body.velocity.y > 0) vy = bSpeed;
+        else if (this.body.velocity.y < 0) vy = -bSpeed;
+
+        if (vx === 0 && vy === 0) {
+             vy = -bSpeed; 
+        }
+
+        this.bulletManager.fire(this.x, this.y, vx, vy);
+    }
+
     preUpdate(time,delta)
     {
         super.preUpdate(time,delta);
@@ -108,10 +124,13 @@ class TankBasic extends BaseEnemy {
             this.start = false;
         }
         this.colisionHandler();
-        
-    } 
 
-    
+        this.shootTimer -= delta;
+        if (this.shootTimer <= 0) {
+            this.shoot();
+            this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
+        }
+    } 
 }
 
 export { TankBasic };

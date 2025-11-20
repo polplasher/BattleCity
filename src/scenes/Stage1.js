@@ -26,15 +26,18 @@ class Stage1 extends Phaser.Scene {
   create() {
     // Managers
     this.bulletManager = new BulletManager(this);
+    this.enemyBulletManager = new BulletManager(this);
     this.obstacleManager = new ObstacleManager(this);
-    this.enemyManager = new EnemyManager(this);
+    this.enemyManager = new EnemyManager(this, this.enemyBulletManager);
     this.explosionManager = new ExplosionManager(this); // Asegúrate que esté aquí
 
     // Bullet pool
     this.bulletPool = this.bulletManager.getPool();
+    this.enemyBulletPool = this.enemyBulletManager.getPool();
 
     // Player
     this.player = new Player(this, this.scale.width / 2, this.scale.height / 2, 'tank');
+    this.player.scene.bulletManager = this.bulletManager;
 
     //Crear obstáculos
     this.obstacleManager.createFromArray([
@@ -75,6 +78,21 @@ class Stage1 extends Phaser.Scene {
       this.bulletManager.onBulletHitEnemy,
       null,
       this.bulletManager
+    );
+
+    //bullet enemy obstaculos
+    this.physics.add.overlap(this.enemyBulletPool, this.obstacleManager.getGroup(),
+      this.enemyBulletManager.onBulletHitObstacle,
+      null,
+      this.enemyBulletManager
+    );
+
+    //buller enemy player
+
+    this.physics.add.overlap(this.enemyBulletPool, this.player,
+      this.enemyBulletManager.onBulletHitPlayer,
+      null,
+      this.enemyBulletManager
     );
   }
 }
