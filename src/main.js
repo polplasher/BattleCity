@@ -3,6 +3,7 @@
 
 // Importamos la configuración del motor
 import { buildConfig } from './core/config.js';
+import { menu } from './scenes/menu.js';
 
 // Importamos las escenas
 import { Stage1 } from './scenes/Stage1.js';
@@ -14,7 +15,7 @@ const game = new Phaser.Game
     buildConfig({
     // Orden en el que se registran/arrancan
     scenes: [
-      // Boot,    // si hay una escena de precarga
+      menu,// Boot,    // si hay una escena de precarga
       Stage1
       // Hud     // si se lanza luego en paralelo (ya lo veremos)
     ],
