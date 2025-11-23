@@ -42,12 +42,14 @@ class BulletManager {
         bullet.hitObstacles.add(obstacle);
         obstacle.destroy();
         bullet.fragmentsHit++;
+       
 
         if (bullet.fragmentsHit >= bullet.maxFragments) {
             bullet.setActive(false);
             bullet.setVisible(false);
             bullet.body.reset(-100, -100);
             bullet.hitObstacles.clear();
+             this.scene.sound.play('bullet_hit_sound');
         }
     }
 
@@ -56,6 +58,7 @@ class BulletManager {
         bullet.setVisible(false);
         bullet.body.reset(-100, -100);
         bullet.hitObstacles.clear();
+        this.scene.sound.play('bullet_hit_sound');
 
         enemy.takeDamage(1);
     }
@@ -69,6 +72,8 @@ onBulletHitPlayer(player, bullet) {
         if (bullet.hitObstacles) {
             bullet.hitObstacles.clear();
         }
+
+        this.scene.sound.play('bullet_hit_sound');
 //aqui poner la logica de la bala al impactar con el player
         //player.takeDamage(1);
     }

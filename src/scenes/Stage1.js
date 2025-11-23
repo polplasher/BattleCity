@@ -21,6 +21,14 @@ class Stage1 extends Phaser.Scene {
 
     // Sprite de explosión 
     this.load.spritesheet('explosion_large', 'effects/explosionLarge.png', { frameWidth: 32, frameHeight: 32 });
+
+
+    //audios
+        this.load.setPath('assets/audio');
+       
+        this.load.audio('explosion_sound', 'Battle City SFX (7).wav');
+       
+        this.load.audio('bullet_hit_sound', 'Battle City SFX (6).wav');
   }
 
   create() {
