@@ -15,6 +15,8 @@ class Explosion extends Phaser.GameObjects.Sprite {
         this.setPosition(x, y);
 
         this.anims.play(animKey);
+
+        this.scene.sound.play('explosion_sound');
     }
 }
 
