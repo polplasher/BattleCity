@@ -4,12 +4,19 @@ import { Player } from '../entities/player/Player.js';
 import { EnemyManager } from '../managers/EnemyManager.js';
 import { ExplosionManager } from '../managers/ExplosionManager.js';
 import { GameStateManager } from '../managers/GameManager.js';
+import { BrickWall } from '../environment/obstacles/BrickWall.js';
+import { SteelWall } from '../environment/obstacles/SteelWall.js';
+import { AllyBase } from '../environment/obstacles/allyBase.js';
 
 class Stage1 extends Phaser.Scene {
   constructor() { super({ key: "gameplayScene" }); }
 
   preload() {
     this.cameras.main.setBackgroundColor('#111');
+
+    BrickWall.preload(this);
+    SteelWall.preload(this);
+    AllyBase.preload(this); 
 
     // Cargar sprites
     this.load.setPath('assets/sprites');
