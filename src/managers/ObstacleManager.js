@@ -1,15 +1,18 @@
-import { Obstacle } from '../environment/obstacles/Obstacle.js';
+import { BrickWall } from '../environment/obstacles/BrickWall.js';
+import { SteelWall } from '../environment/obstacles/SteelWall.js';
+import { AllyBase } from '../environment/obstacles/allyBase.js';
 import { OBSTACLE } from '../core/constants.js';
 
 class ObstacleManager {
     constructor(scene) {
         this.scene = scene;
         this.obstacles = scene.physics.add.staticGroup();
+        this.allyBase = null;
     }
 
-    createFromArray(positions, options = {}) {
+    createFromArray(positions) {
         const blockSize = OBSTACLE.BLOCK_SIZE;
-        const cellSize = blockSize / 4; // Cada celda es 1/4 del bloque total
+        const cellSize = blockSize / 4;
 
         positions.forEach(pos => this.#createBlock(pos.x, pos.y, blockSize, cellSize));
     }
@@ -25,21 +28,37 @@ class ObstacleManager {
                 const x = startX + col * cellSize;
                 const y = startY + row * cellSize;
 
-                const cell = new Obstacle(this.scene, x, y, 'obstacle');
+                const cell = new BrickWall(this.scene, x, y);
                 cell.configureCellSize(cellSize);
                 this.obstacles.add(cell);
             }
         }
     }
 
-    createFromTilemap(tilemap, layerName) {
-        // Para cargar desde Tiled más adelante
-        // const layer = tilemap.getLayer(layerName);
-        // ...
+    createAllyBase(x, y) {
+        this.allyBase = new AllyBase(this.scene, x, y);
+        this.obstacles.add(this.allyBase);
+        return this.allyBase;
+    }
+
+    createSteelWall(x, y) {
+        const wall = new SteelWall(this.scene, x, y);
+        this.obstacles.add(wall);
+        return wall;
+    }
+
+    onBulletHitObstacle(bullet, obstacle) {
+        if (obstacle && typeof obstacle.onHit === 'function') {
+            obstacle.onHit(bullet);
+        }
     }
 
     getGroup() { return this.obstacles; }
-    destroy() { this.obstacles.clear(true, true); }
+    getAllyBase() { return this.allyBase; }
+    destroy() {
+        this.obstacles.clear(true, true);
+        this.allyBase = null;
+    }
 }
 
 export { ObstacleManager };
