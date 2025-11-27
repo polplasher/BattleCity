@@ -23,6 +23,8 @@ class menu extends Phaser.Scene {
     this.startLevelScreenDown = this.add.image(0, this.scale.height, 'startLevelScreen').setOrigin(0).setScale(25);
     this.levelText = this.add.image(GAME_SIZE.WIDTH / 2, GAME_SIZE.HEIGHT / 2, 'stageText').setOrigin(0.5).setAlpha(0);
     
+    this.click = false;
+
     //this.add.text(this.scale.width / 2 + 5, 180, '2 Players', { fontSize: '16px', fill: '#000' }).setOrigin(0.5);
     this.add.tween({
         targets: this.startText,
@@ -47,26 +49,35 @@ class menu extends Phaser.Scene {
         this.add.tween({
             targets: this.startLevelScreenUp,
             duration: 700,
-            y : this.scale.height/2,
-            onComplete:this.showLevelText
+            y : this.scale.height/2
+            //onComplete:this.changeScene
         });
         this.add.tween({
             targets: this.startLevelScreenDown,
             duration: 700,
-            y : this.scale.height/2
+            y : this.scale.height/2,
+            onComplete: this.showLevelText.bind(this)
             
         });
+ 
     }
 
     showLevelText() {
         console.log("showLevelText");
         
-    }
-       /*this.add.tween({
-            targets: this.startLevelScreenDown,
-            duration: 10,
+    
+       this.add.tween({
+            targets: this.levelText,
+            duration: 100,
             alpha: 1
-        });*/
+        });
+        this.add.tween({
+            targets: this.startLevelScreenUp,
+            duration: 2000,
+            alpha: 1,
+            onComplete: this.changeScene.bind(this)
+        });
+    }
     
 
     changeScene() {
@@ -74,8 +85,10 @@ class menu extends Phaser.Scene {
     } 
 
     update() {
+    this.click = false;
     if (this.input.activePointer.isDown) {
         this.startGame();
+        this.click = true;
     }
   }
 
