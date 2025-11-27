@@ -8,13 +8,8 @@ export const PHYSICS =
 {
     TYPE: 'arcade',
     GRAVITY: 0,
-    DEBUG: true
+    DEBUG: false
 }
-
-// export const SYSTEM =
-// {
-//     FRAME_RATE: 10
-// }
 
 export const PLAYER =
 {
