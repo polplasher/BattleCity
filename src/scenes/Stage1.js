@@ -34,6 +34,7 @@ class Stage1 extends Phaser.Scene {
     this.load.setPath('assets/audio');
     this.load.audio('explosion_sound', 'Battle City SFX (7).wav');
     this.load.audio('bullet_hit_sound', 'Battle City SFX (6).wav');
+    this.load.audio('tank_movement_sound', 'Battle City SFX (16).wav');
   }
 
   create() {

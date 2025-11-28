@@ -29,6 +29,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) {
             this.shoot();
         }
+        this.tank_sound = this.scene.sound.add('tank_movement_sound');
     }
 
     createAnimations() {
@@ -57,7 +58,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     handleMovement() {
         this.setVelocity(0, 0);
 
+        
+            
         if (this.keys.D.isDown) {
+            
             this.setVelocityX(this.speed);
             this.anims.play('tank_right', true);
             this.facing = 'right';
@@ -75,8 +79,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.facing = 'down';
         } else {
             this.anims.stop();
+            this.scene.sound.stopByKey('tank_movement_sound');
             this.setFrame({ up: 0, left: 2, down: 4, right: 6 }[this.facing]);
         }
+        if (this.velocity != 0)
+            this.scene.sound.play("tank_movement_sound");
     }
 
     shoot() {
