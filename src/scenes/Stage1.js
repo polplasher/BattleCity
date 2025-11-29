@@ -3,7 +3,7 @@ import { ObstacleManager } from '../managers/ObstacleManager.js';
 import { Player } from '../entities/player/Player.js';
 import { EnemyManager } from '../managers/EnemyManager.js';
 import { ExplosionManager } from '../managers/ExplosionManager.js';
-import { GameStateManager } from '../managers/GameManager.js';
+import { GameManager } from '../managers/GameManager.js';
 import { BrickWall } from '../environment/obstacles/BrickWall.js';
 import { SteelWall } from '../environment/obstacles/SteelWall.js';
 import { AllyBase } from '../environment/obstacles/allyBase.js';
@@ -16,11 +16,10 @@ class Stage1 extends Phaser.Scene {
 
     BrickWall.preload(this);
     SteelWall.preload(this);
-    AllyBase.preload(this); 
+    AllyBase.preload(this);
 
     // Cargar sprites
     this.load.setPath('assets/sprites');
-    this.load.image('obstacle', 'environment/destructible_test.png');
     this.load.spritesheet('tank', 'tanks/yellow/tank1_yellow.png', { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('bullet', 'tanks/bullet.png', { frameWidth: 8, frameHeight: 16 });
 
@@ -48,6 +47,9 @@ class Stage1 extends Phaser.Scene {
     this.player = new Player(this, this.scale.width / 2, this.scale.height / 2, 'tank');
     this.player.scene.bulletManager = this.bulletManager;
 
+    // Base aliada (se añade al grupo de obstáculos)
+    this.allyBase = this.obstacleManager.createAllyBase(this.scale.width / 2, this.scale.height - 30);
+
     //Crear obstáculos
     this.obstacleManager.createFromArray([
       { x: 100, y: 100 }, { x: 200, y: 150 },
@@ -73,7 +75,7 @@ class Stage1 extends Phaser.Scene {
   }
 
   createManagers() {
-    this.gameStateManager = new GameStateManager(this);
+    this.gameManager = new GameManager(this);
     this.bulletManager = new BulletManager(this);
     this.enemyBulletManager = new BulletManager(this);
     this.obstacleManager = new ObstacleManager(this);

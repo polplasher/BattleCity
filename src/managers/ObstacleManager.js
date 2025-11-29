@@ -1,6 +1,6 @@
 import { BrickWall } from '../environment/obstacles/BrickWall.js';
-import { SteelWall } from '../environment/obstacles/SteelWall.js';
 import { AllyBase } from '../environment/obstacles/allyBase.js';
+import { SteelWall } from '../environment/obstacles/SteelWall.js';
 import { OBSTACLE } from '../core/constants.js';
 
 class ObstacleManager {
@@ -22,7 +22,6 @@ class ObstacleManager {
         const startX = centerX - halfBlock + cellSize / 2;
         const startY = centerY - halfBlock + cellSize / 2;
 
-        // Crear grid de 4x4
         for (let row = 0; row < 4; row++) {
             for (let col = 0; col < 4; col++) {
                 const x = startX + col * cellSize;
@@ -36,6 +35,7 @@ class ObstacleManager {
     }
 
     createAllyBase(x, y) {
+        // Añadir al grupo de obstáculos para que colisione con todas las balas
         this.allyBase = new AllyBase(this.scene, x, y);
         this.obstacles.add(this.allyBase);
         return this.allyBase;
@@ -55,7 +55,7 @@ class ObstacleManager {
 
     getGroup() { return this.obstacles; }
     getAllyBase() { return this.allyBase; }
-    destroy() {
+    destroy() { 
         this.obstacles.clear(true, true);
         this.allyBase = null;
     }

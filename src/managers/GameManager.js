@@ -14,7 +14,7 @@ class GameManager {
         this.scene.events.emit('score-changed', this.score);
     }
 
-    loseLife() {
+    takeDamage() {
         if (this.isGameOver) return;
 
         this.lives--;
@@ -25,7 +25,7 @@ class GameManager {
         }
     }
 
-    gainLife() {
+    heal() {
         if (this.isGameOver) return;
         this.lives++;
         this.scene.events.emit('lives-changed', this.lives);
@@ -83,4 +83,4 @@ class GameManager {
     isGameActive() { return !this.isGameOver; }
 }
 
-export { GameManager as GameStateManager };
+export { GameManager };
