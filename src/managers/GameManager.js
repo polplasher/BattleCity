@@ -1,3 +1,5 @@
+import { EVENTS } from '../core/events.js';
+
 class GameManager {
     constructor(scene) {
         this.scene = scene;
@@ -6,19 +8,32 @@ class GameManager {
         this.isGameOver = false;
         this.isVictory = false;
         this.baseDestroyed = false;
+
+        // Escuchar eventos
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        this.scene.events.on(EVENTS.BASE_DESTROYED, this.onBaseDestroyed, this);
+        this.scene.events.on(EVENTS.ENEMY_DIED, this.onEnemyDied, this);
+        this.scene.events.on(EVENTS.PLAYER_DAMAGED, this.takeDamage, this);
+    }
+
+    onEnemyDied(data) {
+        this.addScore(data.points);
     }
 
     addScore(points) {
         if (this.isGameOver) return;
         this.score += points;
-        this.scene.events.emit('score-changed', this.score);
+        this.scene.events.emit(EVENTS.SCORE_CHANGED, { score: this.score });
     }
 
     takeDamage() {
         if (this.isGameOver) return;
 
         this.lives--;
-        this.scene.events.emit('lives-changed', this.lives);
+        this.scene.events.emit(EVENTS.LIVES_CHANGED, { lives: this.lives });
 
         if (this.lives <= 0) {
             this.triggerDefeat('no-lives');
@@ -28,7 +43,7 @@ class GameManager {
     heal() {
         if (this.isGameOver) return;
         this.lives++;
-        this.scene.events.emit('lives-changed', this.lives);
+        this.scene.events.emit(EVENTS.LIVES_CHANGED, { lives: this.lives });
     }
 
     onBaseDestroyed() {
@@ -50,7 +65,7 @@ class GameManager {
 
         this.isVictory = true;
         this.isGameOver = true;
-        this.scene.events.emit('game-victory');
+        this.scene.events.emit(EVENTS.GAME_VICTORY, { score: this.score });
 
         // Opcional: cambiar a escena de victoria después de un delay
         this.scene.time.delayedCall(2000, () => {
@@ -62,7 +77,7 @@ class GameManager {
         if (this.isGameOver) return;
 
         this.isGameOver = true;
-        this.scene.events.emit('game-defeat', reason);
+        this.scene.events.emit(EVENTS.GAME_DEFEAT, { reason, score: this.score });
 
         // Opcional: cambiar a escena de derrota después de un delay
         this.scene.time.delayedCall(2000, () => {

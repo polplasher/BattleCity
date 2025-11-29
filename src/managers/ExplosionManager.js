@@ -1,9 +1,17 @@
 import { Explosion } from '../entities/effects/Explosion.js';
+import { EVENTS } from '../core/events.js';
 
 class ExplosionManager {
     constructor(scene) {
         this.scene = scene;
         this.pool = scene.add.group();
+
+        // Escuchar evento de explosión
+        this.scene.events.on(EVENTS.EXPLOSION_SPAWN, this.onExplosionSpawn, this);
+    }
+
+    onExplosionSpawn(data) {
+        this.spawnExplosion(data.x, data.y);
     }
 
     spawnExplosion(x, y) {

@@ -40,7 +40,7 @@ class BulletManager {
         if (bullet.hitObstacles.has(obstacle)) return;
 
         bullet.hitObstacles.add(obstacle);
-        obstacle.destroy();
+        obstacle.onHit(bullet);
         bullet.fragmentsHit++;
 
         if (bullet.fragmentsHit >= bullet.maxFragments) {

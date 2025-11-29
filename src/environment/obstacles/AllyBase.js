@@ -1,4 +1,5 @@
 import { BaseObstacle } from './BaseObstacle.js';
+import { EVENTS } from '../../core/events.js';
 
 class AllyBase extends BaseObstacle {
     constructor(scene, x, y) {
@@ -8,7 +9,7 @@ class AllyBase extends BaseObstacle {
 
     static preload(scene) {
         scene.load.spritesheet('ally_base', 'assets/sprites/environment/ally_base.png', {
-            frameWidth: 16, // Ajusta según tu sprite
+            frameWidth: 16,
             frameHeight: 16
         });
     }
@@ -21,17 +22,11 @@ class AllyBase extends BaseObstacle {
         if (this.isDestroyed) return;
 
         this.isDestroyed = true;
-
-        // Cambiar a frame de destruida
         this.setFrame(1);
 
-        if (this.scene.gameManager) {
-            this.scene.gameManager.onBaseDestroyed();
-        }
-
-        if (this.scene.explosionManager) {
-            this.scene.explosionManager.spawnExplosion(this.x, this.y);
-        }
+        // Emitir eventos en lugar de llamar directamente
+        this.scene.events.emit(EVENTS.BASE_DESTROYED, { x: this.x, y: this.y });
+        this.scene.events.emit(EVENTS.EXPLOSION_SPAWN, { x: this.x, y: this.y });
     }
 }
 

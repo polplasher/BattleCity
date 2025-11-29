@@ -1,5 +1,5 @@
 import { ENEMY } from '../../core/constants.js';
-
+import { EVENTS } from '../../core/events.js';
 
 class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
@@ -14,9 +14,6 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.health = health;
         this.maxHealth = health;
         this.body.setCollideWorldBounds(true);
-        
-        
-        
     }
 
     // Aplica daño
@@ -30,9 +27,9 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
     // Muerte + explosion
     die() {
-        if (this.scene.explosionManager) {
-            this.scene.explosionManager.spawnExplosion(this.x, this.y);
-        }
+        // Emitir eventos en lugar de llamar directamente
+        this.scene.events.emit(EVENTS.ENEMY_DIED, { x: this.x, y: this.y, points: 100 });
+        this.scene.events.emit(EVENTS.EXPLOSION_SPAWN, { x: this.x, y: this.y });
 
         this.setActive(false);
         this.setVisible(false);
