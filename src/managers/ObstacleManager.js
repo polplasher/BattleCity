@@ -10,6 +10,12 @@ class ObstacleManager {
         this.allyBase = null;
     }
 
+    createObstacle(ObstacleClass, x, y) {
+        const obstacle = new ObstacleClass(this.scene, x, y);
+        this.obstacles.add(obstacle);
+        return obstacle;
+    }
+
     createFromArray(positions) {
         const blockSize = OBSTACLE.BLOCK_SIZE;
         const cellSize = blockSize / 4;
@@ -27,24 +33,23 @@ class ObstacleManager {
                 const x = startX + col * cellSize;
                 const y = startY + row * cellSize;
 
-                const cell = new BrickWall(this.scene, x, y);
+                const cell = this.createBrickWall(x, y);
                 cell.configureCellSize(cellSize);
-                this.obstacles.add(cell);
             }
         }
     }
 
     createAllyBase(x, y) {
-        // Añadir al grupo de obstáculos para que colisione con todas las balas
-        this.allyBase = new AllyBase(this.scene, x, y);
-        this.obstacles.add(this.allyBase);
+        this.allyBase = this.createObstacle(AllyBase, x, y);
         return this.allyBase;
     }
 
     createSteelWall(x, y) {
-        const wall = new SteelWall(this.scene, x, y);
-        this.obstacles.add(wall);
-        return wall;
+        return this.createObstacle(SteelWall, x, y);
+    }
+
+    createBrickWall(x, y) {
+        return this.createObstacle(BrickWall, x, y);
     }
 
     onBulletHitObstacle(bullet, obstacle) {

@@ -1,24 +1,32 @@
-import { Bullet } from '../entities/player/bullet.js';
+import { Bullet } from '../entities/player/Bullet.js';
 
 class BulletManager {
-    constructor(scene) {
+    constructor(scene, maxFragments = 2) {
         this.scene = scene;
         this.pool = scene.physics.add.group({ runChildUpdate: true });
+        this.maxFragments = maxFragments;
     }
 
     fire(x, y, vx, vy) {
-        // Pooling
+        const bullet = this.#getBullet();
+        this.#configureBullet(bullet, x, y, vx, vy);
+        return bullet;
+    }
+
+    #getBullet() {
         let bullet = this.pool.getFirst(false);
         if (!bullet) {
-            bullet = new Bullet(this.scene, x, y, 'bullet');
+            bullet = new Bullet(this.scene, 0, 0, 'bullet');
             this.pool.add(bullet);
-        } else {
-            bullet.setActive(true).setVisible(true);
-            bullet.body.reset(x, y);
         }
+        return bullet;
+    }
 
-        // Configurar bala
+    #configureBullet(bullet, x, y, vx, vy) {
+        bullet.setActive(true).setVisible(true);
+        bullet.body.reset(x, y);
         bullet.setFrame(0).setOrigin(0.5, 0.5);
+        
         if (bullet.body) {
             bullet.body.setAllowGravity(false);
             bullet.body.setSize(4, 4, true);
@@ -26,54 +34,50 @@ class BulletManager {
         }
 
         bullet.fragmentsHit = 0;
-        bullet.maxFragments = 2;
+        bullet.maxFragments = this.maxFragments;
         bullet.hitObstacles = new Set();
-
-        return bullet;
     }
 
     getActiveCount() { return this.pool.getMatching('active', true).length; }
     getPool() { return this.pool; }
 
     onBulletHitObstacle(bullet, obstacle) {
-        if (!bullet.active || bullet.fragmentsHit >= bullet.maxFragments) return;
-        if (bullet.hitObstacles.has(obstacle)) return;
+        if (!this.#canHitObstacle(bullet, obstacle)) return;
 
         bullet.hitObstacles.add(obstacle);
         obstacle.onHit(bullet);
         bullet.fragmentsHit++;
 
         if (bullet.fragmentsHit >= bullet.maxFragments) {
-            bullet.setActive(false);
-            bullet.setVisible(false);
-            bullet.body.reset(-100, -100);
-            bullet.hitObstacles.clear();
-            this.scene.sound.play('bullet_hit_sound');
+            this.#deactivateBullet(bullet);
         }
     }
 
-    onBulletHitEnemy(bullet, enemy) {
+    #canHitObstacle(bullet, obstacle) {
+        return bullet.active && 
+               bullet.fragmentsHit < bullet.maxFragments && 
+               !bullet.hitObstacles.has(obstacle);
+    }
+
+    #deactivateBullet(bullet) {
         bullet.setActive(false);
         bullet.setVisible(false);
         bullet.body.reset(-100, -100);
-        bullet.hitObstacles.clear();
-        this.scene.sound.play('bullet_hit_sound');
-
-        enemy.takeDamage(1);
-    }
-    onBulletHitPlayer(player, bullet) {
-
-        bullet.setActive(false);
-        bullet.setVisible(false);
-        if (bullet.body) bullet.body.reset(-100, -100);
-
         if (bullet.hitObstacles) {
             bullet.hitObstacles.clear();
         }
-
         this.scene.sound.play('bullet_hit_sound');
-        //aqui poner la logica de la bala al impactar con el player
-        //player.takeDamage(1);
+    }
+
+    onBulletHitEnemy(bullet, enemy) {
+        this.#deactivateBullet(bullet);
+        enemy.takeDamage(1);
+    }
+
+    onBulletHitPlayer(bullet, player) {
+        this.#deactivateBullet(bullet);
+        // TODO: Descomentar cuando Player tenga método takeDamage
+        // player.takeDamage(1);
     }
 }
 

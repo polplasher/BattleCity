@@ -4,25 +4,29 @@ class EnemyManager {
     constructor(scene, bulletManager) {
         this.scene = scene;
         this.bulletManager = bulletManager;
-        // Ensure child updates run so enemy `preUpdate` is called when grouped
         this.enemies = scene.physics.add.group({ runChildUpdate: true });
     }
 
-    // Enemigo basico para porbar
-    createEnemy(x, y) {
-        let enemy = this.enemies.getFirst(false);
-
-        if (enemy) {
-            enemy.setBulletManager(this.bulletManager);
-            enemy.reset(x, y);
-        } else {
-            enemy = new TankBasic(this.scene, x, y);
-            enemy.setBulletManager(this.bulletManager);
-            this.enemies.add(enemy);
-
-        }
-
+    createEnemy(x, y, EnemyClass = TankBasic) {
+        const enemy = this.#getOrCreateEnemy(EnemyClass, x, y);
+        this.#setupEnemy(enemy, x, y);
         return enemy;
+    }
+
+    #getOrCreateEnemy(EnemyClass, x, y) {
+        let enemy = this.enemies.getFirst(false);
+        if (!enemy) {
+            enemy = new EnemyClass(this.scene, x, y);
+            this.enemies.add(enemy);
+        }
+        return enemy;
+    }
+
+    #setupEnemy(enemy, x, y) {
+        enemy.setBulletManager(this.bulletManager);
+        if (enemy.active) {
+            enemy.reset(x, y);
+        }
     }
 
     getGroup() { return this.enemies; }
