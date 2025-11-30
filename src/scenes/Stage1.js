@@ -8,6 +8,10 @@ import { BrickWall } from '../environment/obstacles/BrickWall.js';
 import { SteelWall } from '../environment/obstacles/SteelWall.js';
 import { AllyBase } from '../environment/obstacles/allyBase.js';
 
+import { TankBasic } from '../entities/enemies/TankBasic.js';
+import { TankFast } from '../entities/enemies/TankFast.js';
+import { TankPower } from '../entities/enemies/TankPower.js';
+import { TankArmor } from '../entities/enemies/TankArmor.js';
 class Stage1 extends Phaser.Scene {
   constructor() { super({ key: "gameplayScene" }); }
 
@@ -23,8 +27,18 @@ class Stage1 extends Phaser.Scene {
     this.load.spritesheet('tank', 'tanks/yellow/tank1_yellow.png', { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('bullet', 'tanks/bullet.png', { frameWidth: 8, frameHeight: 16 });
 
-    // Sprite del enemigo de prueba (borrar luego)
-    this.load.spritesheet('enemy_tank', 'tanks/red/tank1_red.png', { frameWidth: 16, frameHeight: 16 });
+    
+    // TankBasic:
+    this.load.spritesheet('tank_basic', 'tanks/grey/tank1_grey.png', { frameWidth: 16, frameHeight: 16 });
+
+    // TankFast:
+    this.load.spritesheet('tank_fast', 'tanks/grey/tank2_grey.png', { frameWidth: 16, frameHeight: 16 });
+
+    // TankPower: 
+    this.load.spritesheet('tank_power', 'tanks/grey/tank3_grey.png', { frameWidth: 16, frameHeight: 16 });
+
+    // TankArmor
+    this.load.spritesheet('tank_armor', 'tanks/green/tank1_green.png', { frameWidth: 16, frameHeight: 16 });
 
     // Sprite de explosión 
     this.load.spritesheet('explosion_large', 'effects/explosionLarge.png', { frameWidth: 32, frameHeight: 32 });
@@ -59,9 +73,18 @@ class Stage1 extends Phaser.Scene {
     ]);
 
     // Enemigos para probar si funciona (borrar luego)
-    this.enemyManager.createEnemy(100, 50);
-    this.enemyManager.createEnemy(300, 200);
+   
+    this.enemyManager.createEnemy(50, 50, TankBasic);
 
+   
+    this.enemyManager.createEnemy(330, 50, TankFast);
+
+   
+    this.enemyManager.createEnemy(50, 200, TankPower);
+
+    
+    this.enemyManager.createEnemy(330, 200, TankArmor);
+    
     // Animación de explosión
     this.anims.create({
       key: 'explosion_large_anim',

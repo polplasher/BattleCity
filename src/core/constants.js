@@ -22,18 +22,39 @@ export const PLAYER =
     MAX_BULLETS: 1
 }
 
-export const ENEMY =
-{
-    SPEED: 10,
-    // Si luego cada tipo de enemigo necesita su propia constante:
-    // JUMPER_SPEED: 150,
-    // SLIME_SPEED: 120
-    DEFAULT_HEALTH: 2, // en verdad son todos 1 menos el blindado 
+// core/constants.js
 
-BULLET_SPEED: 160,
+export const ENEMY = {
+    // Velocidades de Movimiento (pixeles por segundo)
+    // Basic: "Slow"
+    SPEED_SLOW: 25,
+    // Power & Armor: "Normal"
+    SPEED_NORMAL: 50,
+    // Fast: "Fast"
+    SPEED_FAST: 80,
+
+    // Velocidades de Bala
+    // Basic: "Slow"
+    BULLET_SPEED_SLOW: 150,
+    // Fast & Armor: "Normal"
+    BULLET_SPEED_NORMAL: 220,
+    // Power: "Fast"
+    BULLET_SPEED_FAST: 300,
+
+    // Salud
+    HEALTH_BASIC: 1,
+    HEALTH_ARMOR: 4,
+
+    // Puntos
+    POINTS_BASIC: 100,
+    POINTS_FAST: 200,
+    POINTS_POWER: 300,
+    POINTS_ARMOR: 400,
+
+    // Cadencia de disparo (para todos por ahora)
     FIRE_RATE_MIN: 1000,
     FIRE_RATE_MAX: 3000
-}
+};
 
 export const OBSTACLE =
 {
