@@ -1,4 +1,6 @@
+
 import { PLAYER } from '../../core/constants.js';
+
 
 class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, key = 'player') {
