@@ -1,4 +1,12 @@
 class Explosion extends Phaser.GameObjects.Sprite {
+    static preload(scene) {
+        scene.load.setPath('assets/sprites');
+        scene.load.spritesheet('explosion_large', 'effects/explosionLarge.png', { frameWidth: 32, frameHeight: 32 });
+        
+        scene.load.setPath('assets/audio');
+        scene.load.audio('explosion_sound', 'Battle City SFX (7).wav');
+    }
+
     constructor(scene, x, y, key = 'explosion_large') {
         super(scene, x, y, key);
         scene.add.existing(this);

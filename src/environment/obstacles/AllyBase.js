@@ -8,7 +8,8 @@ class AllyBase extends BaseObstacle {
     }
 
     static preload(scene) {
-        scene.load.spritesheet('ally_base', 'assets/sprites/environment/ally_base.png', {
+        scene.load.setPath('assets/sprites');
+        scene.load.spritesheet('ally_base', 'environment/ally_base.png', {
             frameWidth: 16,
             frameHeight: 16
         });

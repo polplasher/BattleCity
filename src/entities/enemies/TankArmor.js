@@ -2,6 +2,11 @@ import { BaseEnemy } from './BaseEnemy.js';
 import { ENEMY } from '../../core/constants.js';
 
 class TankArmor extends BaseEnemy {
+    static preload(scene) {
+        scene.load.setPath('assets/sprites');
+        scene.load.spritesheet('tank_armor', 'tanks/green/tank1_green.png', { frameWidth: 16, frameHeight: 16 });
+    }
+
     constructor(scene, x, y) {
         super(
             scene, 
@@ -14,7 +19,6 @@ class TankArmor extends BaseEnemy {
             ENEMY.BULLET_SPEED_NORMAL  
         );
     }
-
     
     onHealthChanged() {
        
