@@ -9,28 +9,22 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         scene.physics.world.enable(this);
 
-        
         this.health = health;
         this.maxHealth = health;
         this.points = points;
         this.moveSpeed = speed;
         this.bulletSpeed = bulletSpeed;
-        
-       
+
         this.body.setCollideWorldBounds(true);
         this.body.setAllowGravity(false);
-        this.setImmovable(true); 
+        this.setImmovable(true);
 
-        
-        this.direction = -1; 
+        this.direction = -1;
         this.start = true;
         this.bulletManager = null;
         this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
 
-        
         this.createAnimations(textureKey);
-        
-       
         this.onHealthChanged();
     }
 
@@ -38,12 +32,9 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.bulletManager = manager;
     }
 
-    
-
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
 
-        
         if (this.start) {
             this.body.setVelocity(0, this.moveSpeed * this.direction);
             this.playAnimation('up');
@@ -52,7 +43,6 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
         this.colisionHandler();
 
-        
         this.shootTimer -= delta;
         if (this.shootTimer <= 0) {
             this.shoot();
@@ -62,16 +52,15 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
     colisionHandler() {
         if (this.body.blocked.left || this.body.blocked.right || this.body.blocked.up || this.body.blocked.down) {
-           
+
             if (Math.random() < 0.5) {
-                
+
                 this.body.setVelocity(this.moveSpeed * this.direction, 0);
                 if (this.direction === 1) this.playAnimation('right');
                 else this.playAnimation('left');
             } else {
-               
                 this.direction = Math.random() < 0.5 ? -1 : 1;
-                
+
                 this.body.setVelocity(0, this.moveSpeed * this.direction);
                 if (this.direction === 1) this.playAnimation('down');
                 else this.playAnimation('up');
@@ -86,20 +75,17 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         let vy = 0;
         const bSpeed = this.bulletSpeed;
 
-       
         if (this.body.velocity.x > 0) vx = bSpeed;
         else if (this.body.velocity.x < 0) vx = -bSpeed;
         else if (this.body.velocity.y > 0) vy = bSpeed;
         else if (this.body.velocity.y < 0) vy = -bSpeed;
-        else vy = bSpeed; 
+        else vy = bSpeed;
 
         this.bulletManager.fire(this.x, this.y, vx, vy);
     }
 
-   
-
     createAnimations(textureKey) {
-        
+
         if (this.scene.anims.exists(textureKey + '_up')) return;
 
         const animConfigs = [
@@ -120,11 +106,8 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     playAnimation(direction) {
-       
         this.anims.play(this.texture.key + '_' + direction, true);
     }
-
-    
 
     takeDamage(amount = 1) {
         this.health -= amount;
@@ -136,7 +119,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     // por ArmorTank
-    onHealthChanged() {}
+    onHealthChanged() { }
 
     die() {
         this.scene.events.emit(EVENTS.ENEMY_DIED, { x: this.x, y: this.y, points: this.points });
@@ -152,7 +135,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.setVisible(true);
         this.body.reset(x, y);
         this.health = this.maxHealth;
-        this.start = true; 
+        this.start = true;
         this.clearTint();
         this.onHealthChanged();
     }

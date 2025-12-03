@@ -28,7 +28,7 @@ class Stage01 extends Phaser.Scene {
     // Base aliada (se añade al grupo de obstáculos)
     this.allyBase = this.obstacleManager.createAllyBase(this.scale.width / 2, this.scale.height - 30);
 
-    //Crear obstáculos
+    // Crear obstáculos. Se hará desde Tiled más adelante
     this.obstacleManager.createFromArray([
       { x: 100, y: 100 }, { x: 200, y: 150 },
       { x: 150, y: 200 }, { x: 300, y: 120 },
@@ -41,15 +41,6 @@ class Stage01 extends Phaser.Scene {
     this.enemyManager.createEnemy(330, 50, TankFast);
     this.enemyManager.createEnemy(50, 200, TankPower);
     this.enemyManager.createEnemy(330, 200, TankArmor);
-    
-    // Animación de explosión
-    this.anims.create({
-      key: 'explosion_large_anim',
-      frames: this.anims.generateFrameNumbers('explosion_large', { start: 0, end: 1 }),
-      frameRate: 8,
-      repeat: 0,
-      hideOnComplete: true
-    });
 
     this.addCollisions();
   }

@@ -14,9 +14,7 @@ import { TankArmor } from '../entities/enemies/TankArmor.js';
  * Carga todos los assets comunes del juego una sola vez.
 */
 class Preloader extends Phaser.Scene {
-    constructor() {
-        super({ key: 'PreloaderScene' });
-    }
+    constructor() { super({ key: 'PreloaderScene' }); }
 
     preload() {
         // Crear barra de progreso (opcional pero recomendado)
