@@ -4,53 +4,17 @@ import { Player } from '../entities/player/Player.js';
 import { EnemyManager } from '../managers/EnemyManager.js';
 import { ExplosionManager } from '../managers/ExplosionManager.js';
 import { GameManager } from '../managers/GameManager.js';
-import { BrickWall } from '../environment/obstacles/BrickWall.js';
-import { SteelWall } from '../environment/obstacles/SteelWall.js';
-import { AllyBase } from '../environment/obstacles/allyBase.js';
 
 import { TankBasic } from '../entities/enemies/TankBasic.js';
 import { TankFast } from '../entities/enemies/TankFast.js';
 import { TankPower } from '../entities/enemies/TankPower.js';
 import { TankArmor } from '../entities/enemies/TankArmor.js';
-class Stage1 extends Phaser.Scene {
-  constructor() { super({ key: "gameplayScene" }); }
 
-  preload() {
-    this.cameras.main.setBackgroundColor('#111');
-
-    BrickWall.preload(this);
-    SteelWall.preload(this);
-    AllyBase.preload(this);
-
-    // Cargar sprites
-    this.load.setPath('assets/sprites');
-    this.load.spritesheet('tank', 'tanks/yellow/tank1_yellow.png', { frameWidth: 16, frameHeight: 16 });
-    this.load.spritesheet('bullet', 'tanks/bullet.png', { frameWidth: 8, frameHeight: 16 });
-
-    
-    // TankBasic:
-    this.load.spritesheet('tank_basic', 'tanks/grey/tank1_grey.png', { frameWidth: 16, frameHeight: 16 });
-
-    // TankFast:
-    this.load.spritesheet('tank_fast', 'tanks/grey/tank2_grey.png', { frameWidth: 16, frameHeight: 16 });
-
-    // TankPower: 
-    this.load.spritesheet('tank_power', 'tanks/grey/tank3_grey.png', { frameWidth: 16, frameHeight: 16 });
-
-    // TankArmor
-    this.load.spritesheet('tank_armor', 'tanks/green/tank1_green.png', { frameWidth: 16, frameHeight: 16 });
-
-    // Sprite de explosión 
-    this.load.spritesheet('explosion_large', 'effects/explosionLarge.png', { frameWidth: 32, frameHeight: 32 });
-
-    // Audios
-    this.load.setPath('assets/audio');
-    this.load.audio('explosion_sound', 'Battle City SFX (7).wav');
-    this.load.audio('bullet_hit_sound', 'Battle City SFX (6).wav');
-    this.load.audio('tank_movement_sound', 'Battle City SFX (16).wav');
-  }
+class Stage01 extends Phaser.Scene {
+  constructor() { super({ key: "Stage01" }); }
 
   create() {
+    this.cameras.main.setBackgroundColor('#111');
     this.createManagers();
 
     // Bullet pool
@@ -73,16 +37,9 @@ class Stage1 extends Phaser.Scene {
     ]);
 
     // Enemigos para probar si funciona (borrar luego)
-   
     this.enemyManager.createEnemy(50, 50, TankBasic);
-
-   
     this.enemyManager.createEnemy(330, 50, TankFast);
-
-   
     this.enemyManager.createEnemy(50, 200, TankPower);
-
-    
     this.enemyManager.createEnemy(330, 200, TankArmor);
     
     // Animación de explosión
@@ -140,4 +97,4 @@ class Stage1 extends Phaser.Scene {
   }
 }
 
-export { Stage1 };
+export { Stage01 };

@@ -3,6 +3,13 @@ import { PLAYER } from '../../core/constants.js';
 
 
 class Player extends Phaser.Physics.Arcade.Sprite {
+    static preload(scene) {
+        scene.load.setPath('assets/sprites');
+        scene.load.spritesheet('tank', 'tanks/yellow/tank1_yellow.png', { frameWidth: 16, frameHeight: 16 });
+        
+        scene.load.setPath('assets/audio');
+        scene.load.audio('tank_movement_sound', 'Battle City SFX (16).wav');
+    }
     constructor(scene, x, y, key = 'player') {
         super(scene, x, y, key, 4);
 
