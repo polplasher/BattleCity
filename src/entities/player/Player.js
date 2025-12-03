@@ -9,6 +9,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         
         scene.load.setPath('assets/audio');
         scene.load.audio('tank_movement_sound', 'Battle City SFX (16).wav');
+
+
+        scene.load.setPath('assets/sprites');
+        scene.load.image('title', 'menus/titlecard.png');
+        scene.load.image('startLevelScreen', 'menus/greyTile.png');
+        scene.load.image('stageText', 'menus/stageText.png');
+        scene.load.spritesheet('tank', 'tanks/yellow/tank1_yellow.png', { frameWidth: 16, frameHeight: 16 });
+
+        scene.load.setPath('assets/audio');
+        scene.load.audio('start_jingle', 'StartLevelAudio.mp3');
+        scene.load.audio('explosion_sound', 'Battle City SFX (7).wav');
     }
     constructor(scene, x, y, key = 'player') {
         super(scene, x, y, key, 4);
