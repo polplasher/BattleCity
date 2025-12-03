@@ -32,6 +32,12 @@ class EnemyManager {
     getGroup() { return this.enemies; }
 
     destroy() { this.enemies.clear(true, true); }
+
+
+
+    getActiveCount() {
+        return this.enemies.countActive(true);
+    }
 }
 
 export { EnemyManager };

@@ -4,11 +4,14 @@ import { Player } from '../entities/player/Player.js';
 import { EnemyManager } from '../managers/EnemyManager.js';
 import { ExplosionManager } from '../managers/ExplosionManager.js';
 import { GameManager } from '../managers/GameManager.js';
+import { SpawnManager } from '../managers/SpawnManager.js';
 
 import { TankBasic } from '../entities/enemies/TankBasic.js';
 import { TankFast } from '../entities/enemies/TankFast.js';
 import { TankPower } from '../entities/enemies/TankPower.js';
 import { TankArmor } from '../entities/enemies/TankArmor.js';
+
+
 
 class Stage01 extends Phaser.Scene {
   constructor() { super({ key: "Stage01" }); }
@@ -16,6 +19,8 @@ class Stage01 extends Phaser.Scene {
   create() {
     this.cameras.main.setBackgroundColor('#111');
     this.createManagers();
+
+    this.spawnManager.startLevel(1);
 
     // Bullet pool
     this.bulletPool = this.bulletManager.getPool();
@@ -36,11 +41,9 @@ class Stage01 extends Phaser.Scene {
       { x: 250, y: 233 }
     ]);
 
-    // Enemigos para probar si funciona (borrar luego)
-    this.enemyManager.createEnemy(50, 50, TankBasic);
-    this.enemyManager.createEnemy(330, 50, TankFast);
-    this.enemyManager.createEnemy(50, 200, TankPower);
-    this.enemyManager.createEnemy(330, 200, TankArmor);
+   
+   
+    
 
     this.addCollisions();
   }
@@ -52,6 +55,7 @@ class Stage01 extends Phaser.Scene {
     this.obstacleManager = new ObstacleManager(this);
     this.enemyManager = new EnemyManager(this, this.enemyBulletManager);
     this.explosionManager = new ExplosionManager(this);
+    this.spawnManager = new SpawnManager(this, this.enemyManager);
   }
 
   addCollisions() {
@@ -86,6 +90,11 @@ class Stage01 extends Phaser.Scene {
       this.enemyBulletManager
     );
   }
+
+  update(time, delta) {
+       
+        this.spawnManager.update(time, delta);
+    }
 }
 
 export { Stage01 };
