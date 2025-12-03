@@ -65,7 +65,7 @@ class menu extends Phaser.Scene {
     }
     
     animateTank() {
-        this.tank.anims.play('tank_anim', true);
+        //this.tank.anims.play('tank_anim', true);
     }
 
     

@@ -18,7 +18,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true);
 
         this.BULLET_FRAMES = { up: 0, left: 1, down: 2, right: 3 };
-
+        this.sound = false;
         this.keys = scene.input.keyboard.addKeys('W,A,S,D,SPACE');
         this.createAnimations();
     }
@@ -83,9 +83,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.stop();
             this.scene.sound.stopByKey('tank_movement_sound');
             this.setFrame({ up: 0, left: 2, down: 4, right: 6 }[this.facing]);
+            this.sound = false;
         }
-        if (this.velocity != 0)
+        if (this.velocity != 0 && !this.sound){
             this.scene.sound.play("tank_movement_sound");
+            this.sound = true;
+        }
     }
 
     shoot() {
