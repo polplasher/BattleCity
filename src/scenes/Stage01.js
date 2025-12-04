@@ -6,13 +6,6 @@ import { ExplosionManager } from '../managers/ExplosionManager.js';
 import { GameManager } from '../managers/GameManager.js';
 import { SpawnManager } from '../managers/SpawnManager.js';
 
-import { TankBasic } from '../entities/enemies/TankBasic.js';
-import { TankFast } from '../entities/enemies/TankFast.js';
-import { TankPower } from '../entities/enemies/TankPower.js';
-import { TankArmor } from '../entities/enemies/TankArmor.js';
-
-
-
 class Stage01 extends Phaser.Scene {
   constructor() { super({ key: "Stage01" }); }
 
@@ -40,10 +33,6 @@ class Stage01 extends Phaser.Scene {
       { x: 300, y: 250 }, { x: 318, y: 233 },
       { x: 250, y: 233 }
     ]);
-
-   
-   
-    
 
     this.addCollisions();
   }
@@ -92,10 +81,9 @@ class Stage01 extends Phaser.Scene {
   }
 
   update(time, delta) {
-       
-        this.spawnManager.update(time, delta);
-        if (this.player) this.player.update();
-    }
+    this.spawnManager.update(time, delta);
+    if (this.player) this.player.update();
+  }
 }
 
 export { Stage01 };

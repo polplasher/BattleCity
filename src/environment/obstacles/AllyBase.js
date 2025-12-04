@@ -11,7 +11,8 @@ class AllyBase extends BaseObstacle {
         scene.load.setPath('assets/sprites');
         scene.load.spritesheet('ally_base', 'environment/ally_base.png', {
             frameWidth: 16,
-            frameHeight: 16
+            frameHeight: 16,
+            endFrame: 1
         });
     }
 
