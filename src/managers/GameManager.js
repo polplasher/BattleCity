@@ -79,9 +79,9 @@ class GameManager {
         this.isGameOver = true;
         this.scene.events.emit(EVENTS.GAME_DEFEAT, { reason, score: this.score });
 
-        // Opcional: cambiar a escena de derrota después de un delay
+        // TODO: Cambiar a escena de score 
         this.scene.time.delayedCall(2000, () => {
-            // this.scene.scene.start('GameOverScene', { score: this.score, reason });
+            this.scene.scene.start('MenuScene', { score: this.score, reason });
         });
     }
 

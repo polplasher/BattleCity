@@ -31,9 +31,6 @@ class AllyBase extends BaseObstacle {
         // Emitir eventos en lugar de llamar directamente
         this.scene.events.emit(EVENTS.BASE_DESTROYED, { x: this.x, y: this.y });
         this.scene.events.emit(EVENTS.EXPLOSION_SPAWN, { x: this.x, y: this.y });
-        
-        // Mantener el sprite visible con el frame destruido
-        // No llamar a super.destroy() para que siga siendo colisionable
     }
 }
 
