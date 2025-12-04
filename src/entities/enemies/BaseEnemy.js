@@ -7,24 +7,28 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        scene.physics.world.enable(this);
-
-        this.health = health;
-        this.maxHealth = health;
+        
+        // Guardamos stats iniciales para poder resetear luego
+        this.initialHealth = health;
         this.points = points;
         this.moveSpeed = speed;
         this.bulletSpeed = bulletSpeed;
 
+        // Configuración física
         this.body.setCollideWorldBounds(true);
         this.body.setAllowGravity(false);
         this.setImmovable(true);
 
+        // Estado interno
         this.direction = -1;
         this.start = true;
         this.bulletManager = null;
         this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
 
         this.createAnimations(textureKey);
+        
+        // Iniciar estado
+        this.health = this.initialHealth;
         this.onHealthChanged();
     }
 
@@ -51,16 +55,16 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     colisionHandler() {
+        // Verificación de seguridad por si el body desapareció
+        if (!this.body) return;
+
         if (this.body.blocked.left || this.body.blocked.right || this.body.blocked.up || this.body.blocked.down) {
-
             if (Math.random() < 0.5) {
-
                 this.body.setVelocity(this.moveSpeed * this.direction, 0);
                 if (this.direction === 1) this.playAnimation('right');
                 else this.playAnimation('left');
             } else {
                 this.direction = Math.random() < 0.5 ? -1 : 1;
-
                 this.body.setVelocity(0, this.moveSpeed * this.direction);
                 if (this.direction === 1) this.playAnimation('down');
                 else this.playAnimation('up');
@@ -68,6 +72,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    // ... (shoot, createAnimations, playAnimation se quedan igual) ...
     shoot() {
         if (!this.bulletManager || !this.active) return;
 
@@ -85,16 +90,13 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     createAnimations(textureKey) {
-
         if (this.scene.anims.exists(textureKey + '_up')) return;
-
         const animConfigs = [
             { suffix: '_up', start: 0, end: 1 },
             { suffix: '_left', start: 2, end: 3 },
             { suffix: '_down', start: 4, end: 5 },
             { suffix: '_right', start: 6, end: 7 }
         ];
-
         animConfigs.forEach(config => {
             this.scene.anims.create({
                 key: textureKey + config.suffix,
@@ -106,10 +108,14 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     playAnimation(direction) {
-        this.anims.play(this.texture.key + '_' + direction, true);
+        if(this.active) {
+            this.anims.play(this.texture.key + '_' + direction, true);
+        }
     }
 
     takeDamage(amount = 1) {
+        if (!this.active) return; // Evitar daño si ya está muerto
+
         this.health -= amount;
         this.onHealthChanged();
 
@@ -118,26 +124,35 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    // por ArmorTank
     onHealthChanged() { }
 
     die() {
-        this.scene.events.emit(EVENTS.ENEMY_DIED, { x: this.x, y: this.y, points: this.points });
-        this.scene.events.emit(EVENTS.EXPLOSION_SPAWN, { x: this.x, y: this.y });
+        if (!this.active) return; // Evitar doble muerte
 
+        // 1. Desactivar inmediatamente para evitar más colisiones
         this.setActive(false);
         this.setVisible(false);
-        if (this.body) this.body.reset(-500, -500);
+        if (this.body) this.body.enable = false; // Desactivar física explícitamente
+
+        // 2. Emitir eventos
+        this.scene.events.emit(EVENTS.ENEMY_DIED, { x: this.x, y: this.y, points: this.points });
+        this.scene.events.emit(EVENTS.EXPLOSION_SPAWN, { x: this.x, y: this.y });
     }
 
     reset(x, y) {
+        // Reactivar todo
+        this.enableBody(true, x, y, true, true); // Método helper de Phaser para resetear body
         this.setActive(true);
         this.setVisible(true);
-        this.body.reset(x, y);
-        this.health = this.maxHealth;
+        
+        // Restaurar estado
+        this.health = this.initialHealth;
         this.start = true;
         this.clearTint();
         this.onHealthChanged();
+        
+        // Reiniciar timer de disparo para que no disparen todos a la vez al nacer
+        this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
     }
 }
 

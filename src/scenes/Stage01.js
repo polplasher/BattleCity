@@ -94,6 +94,7 @@ class Stage01 extends Phaser.Scene {
   update(time, delta) {
        
         this.spawnManager.update(time, delta);
+        if (this.player) this.player.update();
     }
 }
 

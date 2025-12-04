@@ -28,22 +28,25 @@ class SpawnManager {
     update(time, delta) {
         if (!this.isLevelActive) return;
 
-        // Chequeo de Victoria 
+        // 1. Chequeo de Victoria
         if (this.enemyQueue.length === 0 && this.enemyManager.getActiveCount() === 0) {
             this.isLevelActive = false;
-            
-            // this.scene.events.emit('LEVEL_COMPLETE');
+            console.log("SpawnManager: ¡Nivel Completado!");
             return;
         }
 
         // 2. Lógica de Spawn
         this.spawnTimer += delta;
 
-        // Condiciones: Hay hueco, hay enemigos en cola, pasó el tiempo
-        if (this.enemyManager.getActiveCount() < SPAWN_CONFIG.MAX_ENEMIES_ON_SCREEN && 
-            this.enemyQueue.length > 0 && 
-            this.spawnTimer > SPAWN_CONFIG.SPAWN_TIME_DELAY) {
-            
+        // Variables para depuración (Míralas en la consola F12)
+        const activeCount = this.enemyManager.getActiveCount();
+        const queueLength = this.enemyQueue.length;
+        const timeCheck = this.spawnTimer > SPAWN_CONFIG.SPAWN_TIME_DELAY;
+        const spaceCheck = activeCount < SPAWN_CONFIG.MAX_ENEMIES_ON_SCREEN;
+
+      
+        if (spaceCheck && queueLength > 0 && timeCheck) {
+            console.log("Condiciones cumplidas. Spawneando enemigo...");
             this.spawnNext();
             this.spawnTimer = 0;
         }

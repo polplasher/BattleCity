@@ -7,14 +7,19 @@ class EnemyManager {
         this.enemies = scene.physics.add.group({ runChildUpdate: true });
     }
 
-    createEnemy(x, y, EnemyClass = TankBasic) {
-        const enemy = this.#getOrCreateEnemy(EnemyClass, x, y);
+    createEnemy(x, y, EnemyClass) {
+      
+        const ClassToUse = EnemyClass || TankBasic;
+        
+        const enemy = this.#getOrCreateEnemy(ClassToUse, x, y);
         this.#setupEnemy(enemy, x, y);
         return enemy;
     }
 
     #getOrCreateEnemy(EnemyClass, x, y) {
-        let enemy = this.enemies.getFirst(false);
+     
+        let enemy = this.enemies.getChildren().find(e => !e.active && e instanceof EnemyClass);
+        
         if (!enemy) {
             enemy = new EnemyClass(this.scene, x, y);
             this.enemies.add(enemy);
@@ -24,20 +29,15 @@ class EnemyManager {
 
     #setupEnemy(enemy, x, y) {
         enemy.setBulletManager(this.bulletManager);
-        if (enemy.active) {
-            enemy.reset(x, y);
-        }
+       
+        enemy.reset(x, y);
     }
 
     getGroup() { return this.enemies; }
+    
+    getActiveCount() { return this.enemies.countActive(true); }
 
     destroy() { this.enemies.clear(true, true); }
-
-
-
-    getActiveCount() {
-        return this.enemies.countActive(true);
-    }
 }
 
 export { EnemyManager };
