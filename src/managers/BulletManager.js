@@ -44,10 +44,16 @@ class BulletManager {
     onBulletHitObstacle(bullet, obstacle) {
         if (!this.#canHitObstacle(bullet, obstacle)) return;
 
+        // Marcar obstáculo como impactado
         bullet.hitObstacles.add(obstacle);
+        
+        // Aplicar daño al obstáculo
         obstacle.onHit(bullet);
+        
+        // Incrementar contador de impactos
         bullet.fragmentsHit++;
 
+        // Desactivar bala si alcanzó el máximo de fragmentos
         if (bullet.fragmentsHit >= bullet.maxFragments) {
             this.#deactivateBullet(bullet);
         }
