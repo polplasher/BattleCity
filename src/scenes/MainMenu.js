@@ -1,12 +1,16 @@
 import { GAME_SIZE } from "../core/constants.js";
 
 class MainMenu extends Phaser.Scene {
-    constructor() { super({ key: "MenuScene" }); }
+    constructor() {
+         super({ key: "MenuScene" }); 
+        }
 
     create() {
+        this.keys = this.input.keyboard.addKeys('W,A,S,D,ENTER');
         this.cameras.main.setBackgroundColor('#111');
         this.title = this.add.image(this.scale.width / 2, 300, 'title').setOrigin(0.5).setScale(0.5);
-        this.startText = this.add.text(this.scale.width / 2, 380, 'Play', { fontSize: '16px', fill: '#ddd' }).setOrigin(0.5);
+        this.startText = this.add.text(this.scale.width / 2, 380, '1 Player', { fontSize: '16px', fill: '#ddd' }).setOrigin(0.5);
+        this.twoPlayerText = this.add.text(this.scale.width / 2 + 5, 420, '2 Players', { fontSize: '16px', fill: '#ddd' }).setOrigin(0.5);
 
         this.startLevelScreenUp = this.add.image(0, 0, 'startLevelScreen').setOrigin(0, 1).setScale(25);
         this.startLevelScreenDown = this.add.image(0, this.scale.height, 'startLevelScreen').setOrigin(0).setScale(25);
@@ -15,7 +19,7 @@ class MainMenu extends Phaser.Scene {
 
         this.createAnimations();
 
-        //this.add.text(this.scale.width / 2 + 5, 180, '2 Players', { fontSize: '16px', fill: '#000' }).setOrigin(0.5);
+        
         this.tweens.add({
             targets: [this.startText, this.tank],
             duration: 3000,
@@ -23,6 +27,13 @@ class MainMenu extends Phaser.Scene {
             yoyo: false,
             repeat: 0,
             onComplete: () => this.animateTank()
+        });
+        this.tweens.add({
+            targets: [this.twoPlayerText],
+            duration: 3000,
+            y: 180,
+            yoyo: false,
+            repeat: 0
         });
         this.tweens.add({
             targets: this.title,
@@ -50,6 +61,7 @@ class MainMenu extends Phaser.Scene {
     startGame() {
         this.startText.destroy();
         this.title.destroy();
+        this.twoPlayerText.destroy();
         this.tank.destroy();
         this.tweens.add({
             targets: this.startLevelScreenUp,
@@ -84,10 +96,14 @@ class MainMenu extends Phaser.Scene {
     }
 
     update() {
-        if (this.input.activePointer.isDown) {
+        if (this.keys.ENTER.isDown) {
             this.startGame();
-
         }
+        if (this.keys.W.isDown) 
+            this.tank.y = 150;
+        if (this.keys.S.isDown) 
+            this.tank.y = 180;
+        
     }
 }
 
