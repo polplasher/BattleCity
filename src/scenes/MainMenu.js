@@ -8,14 +8,16 @@ class MainMenu extends Phaser.Scene {
     create() {
         this.keys = this.input.keyboard.addKeys('W,A,S,D,ENTER');
         this.cameras.main.setBackgroundColor('#111');
-        this.title = this.add.image(this.scale.width / 2, 300, 'title').setOrigin(0.5).setScale(0.5);
-        this.startText = this.add.text(this.scale.width / 2, 380, '1 Player', { fontSize: '16px', fill: '#ddd' }).setOrigin(0.5);
-        this.twoPlayerText = this.add.text(this.scale.width / 2 + 5, 420, '2 Players', { fontSize: '16px', fill: '#ddd' }).setOrigin(0.5);
+        this.title = this.add.image(this.scale.width / 2, 300, 'title').setOrigin(0.5);
+        this.startText = this.add.image(this.scale.width / 2, 380, '1PlayerText').setOrigin(0.5);
+        this.twoPlayerText = this.add.image(this.scale.width / 2 + 5, 420, '2PlayersText').setOrigin(0.5);
 
         this.startLevelScreenUp = this.add.image(0, 0, 'startLevelScreen').setOrigin(0, 1).setScale(25);
         this.startLevelScreenDown = this.add.image(0, this.scale.height, 'startLevelScreen').setOrigin(0).setScale(25);
         this.levelText = this.add.image(GAME_SIZE.WIDTH / 2, GAME_SIZE.HEIGHT / 2, 'stageText').setOrigin(0.5).setAlpha(0);
         this.tank = this.add.sprite(this.scale.width / 2 - this.startText.width, 380, 'tank').setFrame(6);
+
+        this.cursorPos = -1;
 
         this.createAnimations();
 
@@ -55,6 +57,7 @@ class MainMenu extends Phaser.Scene {
     animateTank() {
         if (this.tank && this.tank.anims) {
             this.tank.anims.play('tank_anim', true);
+            this.cursorPos = 0;
         }
     }
 
@@ -96,14 +99,31 @@ class MainMenu extends Phaser.Scene {
     }
 
     update() {
+
         if (this.keys.ENTER.isDown) {
             this.startGame();
         }
-        if (this.keys.W.isDown) 
-            this.tank.y = 150;
-        if (this.keys.S.isDown) 
-            this.tank.y = 180;
-        
+        if (Phaser.Input.Keyboard.JustDown(this.keys.W)) {
+            this.cursorPos = (this.tank.y / 30 - 5) - 1;
+        } 
+        if (Phaser.Input.Keyboard.JustDown(this.keys.S)) {
+            this.cursorPos = (this.tank.y / 30 - 5) + 1;
+        }
+        this.cursorPos = Phaser.Math.Clamp(this.cursorPos, -1, 2);
+        switch (this.cursorPos) {
+            case 0:
+                this.tank.y = 150;
+                break;
+            case 1:
+                this.tank.y = 180;
+                break;
+            case 2:
+                this.tank.y = 210;
+                break;
+            default:
+                //;
+                break;
+        }
     }
 }
 

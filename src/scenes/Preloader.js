@@ -20,6 +20,18 @@ class Preloader extends Phaser.Scene {
         // Crear barra de progreso (opcional pero recomendado)
         this.createLoadingBar();
 
+        // Assets del menú
+        this.load.setPath('assets/sprites');
+        this.load.image('title', 'menus/text/titlecard.png');
+        this.load.image('startLevelScreen', 'menus/greyTile.png');
+        this.load.image('stageText', 'menus/text/stageText.png');
+        this.load.image('1PlayerText', 'menus/text/1PlayerText.png');
+        this.load.image('2PlayersText', 'menus/text/2PlayerText.png');
+
+
+        this.load.setPath('assets/audio');
+        this.load.audio('start_jingle', 'StartLevelAudio.mp3');
+
         // Cargar assets de todas las entidades del juego
         Player.preload(this);
         Bullet.preload(this);
@@ -36,14 +48,7 @@ class Preloader extends Phaser.Scene {
         TankPower.preload(this);
         TankArmor.preload(this);
 
-        // Assets del menú
-        this.load.setPath('assets/sprites');
-        this.load.image('title', 'menus/titlecard.png');
-        this.load.image('startLevelScreen', 'menus/greyTile.png');
-        this.load.image('stageText', 'menus/stageText.png');
-
-        this.load.setPath('assets/audio');
-        this.load.audio('start_jingle', 'StartLevelAudio.mp3');
+        
     }
 
     createLoadingBar() {
