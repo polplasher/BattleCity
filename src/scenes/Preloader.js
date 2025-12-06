@@ -25,9 +25,11 @@ class Preloader extends Phaser.Scene {
         this.load.image('title', 'menus/text/titlecard.png');
         this.load.image('startLevelScreen', 'menus/greyTile.png');
         this.load.image('stageText', 'menus/text/stageText.png');
+        this.load.image('highScoreText', 'menus/text/hiText.png');
+        this.load.image('constructionText', 'menus/text/constructionText.png');
         this.load.image('1PlayerText', 'menus/text/1PlayerText.png');
         this.load.image('2PlayersText', 'menus/text/2PlayerText.png');
-
+        this.load.spritesheet('numberSpritesheet', 'menus/text/numbersWhite.png', { frameWidth: 17, frameHeight: 10 });
 
         this.load.setPath('assets/audio');
         this.load.audio('start_jingle', 'StartLevelAudio.mp3');

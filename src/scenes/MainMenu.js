@@ -11,6 +11,10 @@ class MainMenu extends Phaser.Scene {
         this.title = this.add.image(this.scale.width / 2, 300, 'title').setOrigin(0.5);
         this.startText = this.add.image(this.scale.width / 2, 380, '1PlayerText').setOrigin(0.5);
         this.twoPlayerText = this.add.image(this.scale.width / 2 + 5, 420, '2PlayersText').setOrigin(0.5);
+        this.constructionText = this.add.image(this.scale.width / 2 + 15, 460, 'constructionText').setOrigin(0.5);
+
+        this.HIText = this.add.image(this.scale.width/2 - 10, 10, 'highScoreText').setOrigin(1, 0);
+        this.HIScoreNumbers = this.add.sprite(this.scale.width/2 + 20, 5, 'numberSpritesheet', 0).setScale(1.5).setOrigin(1, 0);
 
         this.startLevelScreenUp = this.add.image(0, 0, 'startLevelScreen').setOrigin(0, 1).setScale(25);
         this.startLevelScreenDown = this.add.image(0, this.scale.height, 'startLevelScreen').setOrigin(0).setScale(25);
@@ -34,6 +38,13 @@ class MainMenu extends Phaser.Scene {
             targets: [this.twoPlayerText],
             duration: 3000,
             y: 180,
+            yoyo: false,
+            repeat: 0
+        });
+        this.tweens.add({
+            targets: [this.constructionText],
+            duration: 3000,
+            y: 210,
             yoyo: false,
             repeat: 0
         });
