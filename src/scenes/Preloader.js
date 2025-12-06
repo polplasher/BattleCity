@@ -50,6 +50,22 @@ class Preloader extends Phaser.Scene {
         TankPower.preload(this);
         TankArmor.preload(this);
 
+
+        //powerups
+        this.load.setPath('assets/sprites/powerups'); 
+        
+        this.load.image('powerup_gun', 'powerUp1.png');
+        this.load.image('powerup_tank', 'powerUp2.png');
+        this.load.image('powerup_grenade', 'powerUp3.png');
+        this.load.image('powerup_star', 'powerUp4.png');
+        this.load.image('powerup_shovel', 'powerUp5.png');
+        this.load.image('powerup_timer', 'powerUp6.png');
+        this.load.image('powerup_helmet', 'powerUp7.png');
+
+         this.load.setPath('assets/audio');
+    this.load.audio('powerup_appear', 'Battle City SFX (14).wav');
+    this.load.audio('powerup_pick', 'Battle City SFX (15).wav');
+
         
     }
 

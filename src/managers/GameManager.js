@@ -1,4 +1,5 @@
 import { EVENTS } from '../core/events.js';
+import { POWERUP } from '../core/constants.js';
 
 class GameManager {
     constructor(scene) {
@@ -17,10 +18,18 @@ class GameManager {
         this.scene.events.on(EVENTS.BASE_DESTROYED, this.onBaseDestroyed, this);
         this.scene.events.on(EVENTS.ENEMY_DIED, this.onEnemyDied, this);
         this.scene.events.on(EVENTS.PLAYER_DAMAGED, this.takeDamage, this);
+
+        this.scene.events.on(EVENTS.POWERUP_COLLECTED, this.onPowerUpCollected, this);
     }
 
     onEnemyDied(data) {
         this.addScore(data.points);
+    }
+
+   
+    onPowerUpCollected(data) {
+        
+        //para sumar puntos con el powerUp (tienen que sumar 500p)
     }
 
     addScore(points) {
