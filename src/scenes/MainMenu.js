@@ -14,7 +14,8 @@ class MainMenu extends Phaser.Scene {
         this.constructionText = this.add.image(this.scale.width / 2 + 15, 460, 'constructionText').setOrigin(0.5);
 
         this.HIText = this.add.image(this.scale.width/2 - 10, 10, 'highScoreText').setOrigin(1, 0);
-        this.HIScoreNumbers = this.add.sprite(this.scale.width/2 + 20, 5, 'numberSpritesheet', 0).setScale(1.5).setOrigin(1, 0);
+        this.HIScoreNumbers = this.add.sprite(this.scale.width/2, 10, 'numberSpritesheet', 0).setFrame(1).setOrigin(1, 0);
+        this.HIScore0s = this.add.sprite(this.HIScoreNumbers.x + 17, 10, '00Text', 0).setOrigin(1, 0);
 
         this.startLevelScreenUp = this.add.image(0, 0, 'startLevelScreen').setOrigin(0, 1).setScale(25);
         this.startLevelScreenDown = this.add.image(0, this.scale.height, 'startLevelScreen').setOrigin(0).setScale(25);
