@@ -5,6 +5,8 @@ import { EnemyManager } from '../managers/EnemyManager.js';
 import { ExplosionManager } from '../managers/ExplosionManager.js';
 import { GameManager } from '../managers/GameManager.js';
 import { SpawnManager } from '../managers/SpawnManager.js';
+import { PowerUpManager } from '../managers/PowerUpManager.js';
+import { POWERUP } from '../core/constants.js';
 
 class Stage01 extends Phaser.Scene {
   constructor() { super({ key: "Stage01" }); }
@@ -34,6 +36,12 @@ class Stage01 extends Phaser.Scene {
       { x: 250, y: 233 }
     ]);
 
+    //Para probar powerup helmet
+    this.time.delayedCall(2000, () => {
+        this.powerUpManager.spawnPowerUp(200, 200, POWERUP.HELMET);
+        console.log("Stage01: PowerUp Helmet spawneado para prueba");
+    });
+
     this.addCollisions();
   }
 
@@ -45,12 +53,18 @@ class Stage01 extends Phaser.Scene {
     this.enemyManager = new EnemyManager(this, this.enemyBulletManager);
     this.explosionManager = new ExplosionManager(this);
     this.spawnManager = new SpawnManager(this, this.enemyManager);
+    
+    // Inicializar el Manager de PowerUps
+    this.powerUpManager = new PowerUpManager(this);
   }
 
   addCollisions() {
     // Player collisions
     this.physics.add.collider(this.player, this.obstacleManager.getGroup());
     this.physics.add.collider(this.player, this.enemyManager.getGroup());
+
+    //PowerUps collision
+    this.powerUpManager.setupCollision(this.player);
 
     // Player bullet collisions
     this.physics.add.overlap(this.bulletPool, this.enemyManager.getGroup(),
@@ -80,7 +94,7 @@ class Stage01 extends Phaser.Scene {
     );
   }
 
-  update(time, delta) {
+ update(time, delta) {
     this.spawnManager.update(time, delta);
     if (this.player) this.player.update();
   }

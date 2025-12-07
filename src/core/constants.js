@@ -72,3 +72,29 @@ export const SCALE =
     AUTO_CENTER: 'CENTER_BOTH', // Phaser.Scale.CENTER_BOTH
     ZOOM: 2                     //Para pixelart: escala lógica x2 sin deformar
 }
+
+export const POWERUP = {
+    
+    HELMET: 'helmet',
+    TIMER: 'timer',
+    SHOVEL: 'shovel',
+    STAR: 'star',
+    GRENADE: 'grenade',
+    TANK: 'tank',
+    GUN: 'gun',
+
+    
+    DURATION: 10000,
+    POINTS: 500,
+
+   
+    TEXTURES: {
+        'gun': 'powerup_gun',         
+        'tank': 'powerup_tank',       
+        'grenade': 'powerup_grenade', 
+        'star': 'powerup_star',       
+        'shovel': 'powerup_shovel',   
+        'timer': 'powerup_timer',     
+        'helmet': 'powerup_helmet'    
+    }
+};

@@ -63,5 +63,9 @@ export const EVENTS =
      * Se emite cuando se pierde el juego.
      * payload: { reason: string, score: number }
      */
-    GAME_DEFEAT: 'game:defeat'
+    GAME_DEFEAT: 'game:defeat',
+
+
+    POWERUP_SPAWN: 'powerup:spawn',
+    POWERUP_COLLECTED: 'powerup:collected'
 };
