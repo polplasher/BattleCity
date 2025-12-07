@@ -8,3 +8,4 @@ class ScoreMenu extends Phaser.Scene {
     }
 
 }
+export { ScoreMenu };

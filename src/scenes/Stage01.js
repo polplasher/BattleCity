@@ -15,6 +15,7 @@ class Stage01 extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#111');
     this.createManagers();
 
+    this.keys = this.input.keyboard.addKeys('I');
     this.spawnManager.startLevel(1);
 
     // Bullet pool
@@ -97,6 +98,10 @@ class Stage01 extends Phaser.Scene {
  update(time, delta) {
     this.spawnManager.update(time, delta);
     if (this.player) this.player.update();
+
+    if (this.keys.I.isDown) {
+      this.scene.start("ScoreMenuScene");
+    }
   }
 }
 
