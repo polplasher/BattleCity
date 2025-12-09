@@ -103,10 +103,13 @@ class BulletManager {
         enemy.takeDamage(1);
     }
 
-    onBulletHitPlayer(bullet, player) {
+   onBulletHitPlayer(bullet, player) {
         this.#deactivateBullet(bullet);
-        // TODO: Descomentar cuando Player tenga método takeDamage
-        // player.takeDamage(1);
+        
+        // Verificamos si el player tiene el método (por seguridad) y lo llamamos
+        if (player.takeDamage) {
+            player.takeDamage(1);
+        }
     }
 }
 

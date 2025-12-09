@@ -1,6 +1,6 @@
-
 import { PLAYER } from '../../core/constants.js';
-
+import { EVENTS } from '../../core/events.js';
+import { Bullet } from './Bullet.js';
 
 class Player extends Phaser.Physics.Arcade.Sprite {
     static preload(scene) {
@@ -9,12 +9,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         
         scene.load.setPath('assets/audio');
         scene.load.audio('tank_movement_sound', 'Battle City SFX (16).wav');
-
-
-        scene.load.setPath('assets/sprites');
-        scene.load.spritesheet('tank', 'tanks/yellow/tank1_yellow.png', { frameWidth: 16, frameHeight: 16 });
-
-        scene.load.setPath('assets/audio');
         scene.load.audio('explosion_sound', 'Battle City SFX (7).wav');
     }
     constructor(scene, x, y, key = 'player') {
@@ -34,7 +28,37 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.BULLET_FRAMES = { up: 0, left: 1, down: 2, right: 3 };
         this.sound = false;
         this.keys = scene.input.keyboard.addKeys('W,A,S,D,SPACE');
+
+        this.isInvulnerable = false;
+        this.shieldVisual = null;
+
         this.createAnimations();
+    }
+
+    activateShield(duration = 10000) {
+        if (this.isInvulnerable && this.shieldTimer) {
+            this.shieldTimer.remove();
+        }
+
+        this.isInvulnerable = true;
+        
+        if (!this.shieldVisual) {
+            this.shieldVisual = this.scene.add.graphics();
+        }
+
+        this.shieldTimer = this.scene.time.delayedCall(duration, () => {
+            this.isInvulnerable = false;
+            if (this.shieldVisual) this.shieldVisual.clear();
+        });
+    }
+
+    takeDamage() {
+        if (this.isInvulnerable) {
+            return; 
+        }
+
+        this.scene.events.emit(EVENTS.PLAYER_DAMAGED);
+        this.scene.events.emit(EVENTS.EXPLOSION_SPAWN, { x: this.x, y: this.y });
     }
 
     preUpdate(time, delta) {
@@ -46,6 +70,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.shoot();
         }
         this.tank_sound = this.scene.sound.add('tank_movement_sound');
+
+        if (this.isInvulnerable && this.shieldVisual) {
+            this.shieldVisual.clear();
+            const color = Math.floor(time / 100) % 2 === 0 ? 0xffffff : 0x555555; 
+            this.shieldVisual.lineStyle(2, color);
+            this.shieldVisual.strokeRect(this.x - 9, this.y - 9, 18, 18);
+        }
     }
 
     createAnimations() {
@@ -119,12 +150,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.scene.bulletManager) {
             this.scene.bulletManager.fire(this.x, this.y, vx, vy, frame);
         } else {
-            this.createBulletFromPool(vx, vy,);
+            this.createBulletFromPool(vx, vy);
         }
     }
 
     canShoot() {
         const bulletPool = this.scene.bulletPool;
+        
+        if (!bulletPool) return false;
+
         const activeCount = bulletPool.getMatching('active', true).length;
 
         if (activeCount >= PLAYER.MAX_BULLETS) return false;
@@ -151,6 +185,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     createBulletFromPool(vx, vy) {
         const bulletPool = this.scene.bulletPool;
+        
+        if(!bulletPool) return;
 
         let bullet = bulletPool.getFirst(false);
         if (!bullet) {
