@@ -1,5 +1,6 @@
 import { ENEMY } from '../../core/constants.js';
 import { EVENTS } from '../../core/events.js';
+import { GAME_SIZE } from '../../core/constants.js';
 
 class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, textureKey, health, points, speed, bulletSpeed) {
@@ -18,6 +19,9 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.body.setCollideWorldBounds(true);
         this.body.setAllowGravity(false);
         this.setImmovable(true);
+        
+        // Habilitar evento de colisión con world bounds
+        this.body.onWorldBounds = true;
 
         // Estado interno
         this.direction = -1;
@@ -58,16 +62,53 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         // Verificación de seguridad por si el body desapareció
         if (!this.body) return;
 
-        if (this.body.blocked.left || this.body.blocked.right || this.body.blocked.up || this.body.blocked.down) {
-            if (Math.random() < 0.5) {
-                this.body.setVelocity(this.moveSpeed * this.direction, 0);
-                if (this.direction === 1) this.playAnimation('right');
-                else this.playAnimation('left');
-            } else {
-                this.direction = Math.random() < 0.5 ? -1 : 1;
-                this.body.setVelocity(0, this.moveSpeed * this.direction);
-                if (this.direction === 1) this.playAnimation('down');
-                else this.playAnimation('up');
+        const blocked = this.body.blocked;
+        const halfWidth = this.body.width / 2;
+        const halfHeight = this.body.height / 2;
+        
+        // Detectar bordes de pantalla manualmente
+        const atLeftEdge = this.x - halfWidth <= 0;
+        const atRightEdge = this.x + halfWidth >= GAME_SIZE.WIDTH;
+        const atTopEdge = this.y - halfHeight <= 0;
+        const atBottomEdge = this.y + halfHeight >= GAME_SIZE.HEIGHT;
+        
+        // Combinar colisiones físicas con bordes de pantalla
+        const blockedLeft = blocked.left || atLeftEdge;
+        const blockedRight = blocked.right || atRightEdge;
+        const blockedUp = blocked.up || atTopEdge;
+        const blockedDown = blocked.down || atBottomEdge;
+        
+        if (blockedLeft || blockedRight || blockedUp || blockedDown) {
+            // Obtener direcciones válidas (no bloqueadas)
+            const validDirections = [];
+            
+            if (!blockedUp) validDirections.push('up');
+            if (!blockedDown) validDirections.push('down');
+            if (!blockedLeft) validDirections.push('left');
+            if (!blockedRight) validDirections.push('right');
+            
+            // Elegir una dirección válida aleatoria
+            if (validDirections.length > 0) {
+                const newDir = Phaser.Utils.Array.GetRandom(validDirections);
+                
+                switch (newDir) {
+                    case 'up':
+                        this.body.setVelocity(0, -this.moveSpeed);
+                        this.playAnimation('up');
+                        break;
+                    case 'down':
+                        this.body.setVelocity(0, this.moveSpeed);
+                        this.playAnimation('down');
+                        break;
+                    case 'left':
+                        this.body.setVelocity(-this.moveSpeed, 0);
+                        this.playAnimation('left');
+                        break;
+                    case 'right':
+                        this.body.setVelocity(this.moveSpeed, 0);
+                        this.playAnimation('right');
+                        break;
+                }
             }
         }
     }
