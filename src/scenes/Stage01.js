@@ -6,6 +6,7 @@ import { ExplosionManager } from '../managers/ExplosionManager.js';
 import { GameManager } from '../managers/GameManager.js';
 import { SpawnManager } from '../managers/SpawnManager.js';
 import { PowerUpManager } from '../managers/PowerUpManager.js';
+import { ScorePopupManager } from '../managers/ScorePopupManager.js';
 import { POWERUP } from '../core/constants.js';
 
 class Stage01 extends Phaser.Scene {
@@ -54,6 +55,7 @@ class Stage01 extends Phaser.Scene {
     this.enemyManager = new EnemyManager(this, this.enemyBulletManager);
     this.explosionManager = new ExplosionManager(this);
     this.spawnManager = new SpawnManager(this, this.enemyManager);
+    this.scorePopupManager = new ScorePopupManager(this);
     
     // Inicializar el Manager de PowerUps
     this.powerUpManager = new PowerUpManager(this);

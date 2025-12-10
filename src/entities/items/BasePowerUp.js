@@ -41,18 +41,19 @@ class BasePowerUp extends Phaser.Physics.Arcade.Sprite {
     collect(player) {
         if (!this.active) return;
 
-        // 1. Sonido y visuales comunes
+        // 1. Sonido
         this.scene.sound.play('powerup_pick');
-        this.showScoreText();
 
         // 2. APLICAR EL EFECTO ESPECÍFICO 
         this.applyEffect(player);
 
-        // 3. Emitir evento SOLO para puntuación en GameManager
+        // 3. Emitir evento para puntuación (GameManager) y popup (ScorePopupManager)
         this.scene.events.emit(EVENTS.POWERUP_COLLECTED, { 
             type: this.type, 
             player: player,
-            points: POWERUP.POINTS 
+            points: POWERUP.POINTS,
+            x: this.x,
+            y: this.y
         });
 
         this.destroy();
@@ -61,21 +62,6 @@ class BasePowerUp extends Phaser.Physics.Arcade.Sprite {
   
     applyEffect(player) {
         console.warn(`El PowerUp ${this.type} no tiene efecto implementado.`);
-    }
-
-    showScoreText() {
-        const scoreText = this.scene.add.text(this.x, this.y, POWERUP.POINTS.toString(), {
-            font: '10px monospace',
-            fill: '#ffffff'
-        }).setOrigin(0.5);
-
-        this.scene.tweens.add({
-            targets: scoreText,
-            y: this.y - 20,
-            alpha: 0,
-            duration: 1000,
-            onComplete: () => scoreText.destroy()
-        });
     }
 
     destroy() {

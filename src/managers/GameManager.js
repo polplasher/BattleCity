@@ -1,11 +1,13 @@
 import { EVENTS } from '../core/events.js';
 import { POWERUP } from '../core/constants.js';
+import { highScoreManager } from './HighScoreManager.js';
 
 class GameManager {
     constructor(scene) {
         this.scene = scene;
         this.score = 0;
         this.lives = 3;
+        this.stage = 1;
         this.isGameOver = false;
         this.isVictory = false;
         this.baseDestroyed = false;
@@ -25,12 +27,10 @@ class GameManager {
     onEnemyDied(data) {
         this.addScore(data.points);
     }
-
    
     onPowerUpCollected(data) {
-        
-        //para sumar puntos con el powerUp (tienen que sumar 500p)
-    }
+        this.addScore(POWERUP.POINTS);
+    }    
 
     addScore(points) {
         if (this.isGameOver) return;
@@ -74,7 +74,15 @@ class GameManager {
 
         this.isVictory = true;
         this.isGameOver = true;
-        this.scene.events.emit(EVENTS.GAME_VICTORY, { score: this.score });
+        
+        // Verificar si es highscore
+        const isHighScore = highScoreManager.isHighScore(this.score);
+        
+        this.scene.events.emit(EVENTS.GAME_VICTORY, { 
+            score: this.score, 
+            stage: this.stage,
+            isHighScore 
+        });
 
         // Opcional: cambiar a escena de victoria después de un delay
         this.scene.time.delayedCall(2000, () => {
@@ -86,17 +94,59 @@ class GameManager {
         if (this.isGameOver) return;
 
         this.isGameOver = true;
-        this.scene.events.emit(EVENTS.GAME_DEFEAT, { reason, score: this.score });
+        
+        // Verificar si es highscore
+        const isHighScore = highScoreManager.isHighScore(this.score);
+        
+        this.scene.events.emit(EVENTS.GAME_DEFEAT, { 
+            reason, 
+            score: this.score,
+            stage: this.stage,
+            isHighScore 
+        });
 
         // TODO: Cambiar a escena de score 
         this.scene.time.delayedCall(2000, () => {
-            this.scene.scene.start('MenuScene', { score: this.score, reason });
+            this.scene.scene.start('MenuScene', { 
+                score: this.score, 
+                stage: this.stage,
+                reason,
+                isHighScore 
+            });
         });
+    }
+
+    /**
+     * Guarda el score actual en el ranking de highscores
+     * @param {string} playerName - Nombre del jugador
+     * @returns {number} Posición en el ranking (1-based) o -1 si no entró
+     */
+    saveHighScore(playerName) {
+        return highScoreManager.addScore(playerName, this.score, this.stage);
+    }
+
+    /**
+     * Obtiene los highscores
+     */
+    getHighScores() {
+        return highScoreManager.getScores();
+    }
+
+    /**
+     * Obtiene el score más alto
+     */
+    getTopScore() {
+        return highScoreManager.getTopScore();
+    }
+
+    setStage(stage) {
+        this.stage = stage;
     }
 
     reset() {
         this.score = 0;
         this.lives = 3;
+        this.stage = 1;
         this.isGameOver = false;
         this.isVictory = false;
         this.baseDestroyed = false;
