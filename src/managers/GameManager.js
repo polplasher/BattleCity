@@ -105,9 +105,9 @@ class GameManager {
             isHighScore 
         });
 
-        // TODO: Cambiar a escena de score 
+        // Cambiar a escena de score 
         this.scene.time.delayedCall(2000, () => {
-            this.scene.scene.start('MenuScene', { 
+            this.scene.scene.start('ScoreMenuScene', { 
                 score: this.score, 
                 stage: this.stage,
                 reason,
