@@ -37,10 +37,10 @@ class Stage01 extends Phaser.Scene {
       { x: 250, y: 233 }
     ]);
 
-    //Para probar powerup helmet
+    //Para probar powerups
     this.time.delayedCall(2000, () => {
         this.powerUpManager.spawnPowerUp(200, 200, POWERUP.HELMET);
-        console.log("Stage01: PowerUp Helmet spawneado para prueba");
+       this.powerUpManager.spawnPowerUp(250, 250, POWERUP.TANK);
     });
 
     this.addCollisions();

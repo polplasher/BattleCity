@@ -106,7 +106,7 @@ class BulletManager {
    onBulletHitPlayer(bullet, player) {
         this.#deactivateBullet(bullet);
         
-        // Verificamos si el player tiene el método (por seguridad) y lo llamamos
+        
         if (player.takeDamage) {
             player.takeDamage(1);
         }

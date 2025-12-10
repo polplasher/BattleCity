@@ -1,5 +1,6 @@
 import { BasePowerUp } from '../entities/items/BasePowerUp.js';
 import { Helmet } from '../entities/items/Helmet.js'; 
+import { TankItem } from '../entities/items/TankItem.js';
 import { POWERUP } from '../core/constants.js';
 
 class PowerUpManager {
@@ -17,7 +18,9 @@ class PowerUpManager {
                 powerup = new Helmet(this.scene, x, y);
                 break;
             
-         
+            case POWERUP.TANK:
+                powerup = new TankItem(this.scene, x, y);
+                break;
 
             default:
                 
