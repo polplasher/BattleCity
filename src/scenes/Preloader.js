@@ -31,9 +31,12 @@ class Preloader extends Phaser.Scene {
         this.load.image('2PlayersText', 'menus/text/2PlayerText.png');
         this.load.image('00Text', 'menus/text/double0Text.png');
         this.load.spritesheet('numberSpritesheet', 'menus/text/numbersWhite.png', { frameWidth: 8, frameHeight: 8 });
-
+       
+        // Audio
         this.load.setPath('assets/audio');
         this.load.audio('start_jingle', 'StartLevelAudio.mp3');
+        this.load.audio('powerup_appear', 'Battle City SFX (14).wav');
+        this.load.audio('powerup_pick', 'Battle City SFX (15).wav');
 
         // Cargar assets de todas las entidades del juego
         Player.preload(this);
@@ -61,13 +64,7 @@ class Preloader extends Phaser.Scene {
         this.load.image('powerup_star', 'powerUp4.png');
         this.load.image('powerup_shovel', 'powerUp5.png');
         this.load.image('powerup_timer', 'powerUp6.png');
-        this.load.image('powerup_helmet', 'powerUp7.png');
-
-         this.load.setPath('assets/audio');
-    this.load.audio('powerup_appear', 'Battle City SFX (14).wav');
-    this.load.audio('powerup_pick', 'Battle City SFX (15).wav');
-
-        
+        this.load.image('powerup_helmet', 'powerUp7.png');    
     }
 
     createLoadingBar() {

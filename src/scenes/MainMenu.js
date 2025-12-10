@@ -78,6 +78,11 @@ class MainMenu extends Phaser.Scene {
         this.title.destroy();
         this.twoPlayerText.destroy();
         this.tank.destroy();
+        this.constructionText.destroy();
+        this.HIScore0s.destroy();
+        this.HIScoreNumbers.destroy();
+        this.HIText.destroy();
+    
         this.tweens.add({
             targets: this.startLevelScreenUp,
             duration: 700,
@@ -107,7 +112,7 @@ class MainMenu extends Phaser.Scene {
 
     changeScene() {
         this.sound.play('start_jingle');
-        this.scene.start("Stage01");
+        this.scene.start("ScoreMenuScene");
     }
 
     update() {
