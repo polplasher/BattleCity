@@ -16,8 +16,8 @@ const game = new Phaser.Game(
         scenes: [
             Preloader,  // Carga todos los assets primero
             MainMenu,   // Menú principal
-            Stage01,      // Nivel 1
-            ScoreMenu    // Menú de puntuaciones
+            Stage01,    // Nivel 1
+            ScoreMenu   // Pantalla de puntuación
             // Hud     // si se lanza luego en paralelo (ya lo veremos)
         ],
     })
