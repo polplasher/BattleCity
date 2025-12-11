@@ -112,7 +112,7 @@ class MainMenu extends Phaser.Scene {
 
     changeScene() {
         this.sound.play('start_jingle');
-        this.scene.start("ScoreMenuScene");
+        this.scene.start('Stage01');
     }
 
     update() {
