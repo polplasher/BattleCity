@@ -8,10 +8,11 @@ class MainMenu extends Phaser.Scene {
     create() {
         this.keys = this.input.keyboard.addKeys('W,A,S,D,ENTER');
         this.cameras.main.setBackgroundColor('#111');
+        
         this.title = this.add.image(this.scale.width / 2, 300, 'title').setOrigin(0.5);
         this.startText = this.add.image(this.scale.width / 2, 380, '1PlayerText').setOrigin(0.5);
-        this.twoPlayerText = this.add.image(this.scale.width / 2 + 5, 420, '2PlayersText').setOrigin(0.5);
-        this.constructionText = this.add.image(this.scale.width / 2 + 15, 460, 'constructionText').setOrigin(0.5);
+        this.twoPlayerText = this.add.image(this.scale.width / 2 + 5, 410, '2PlayersText').setOrigin(0.5);
+        this.constructionText = this.add.image(this.scale.width / 2 + 15, 440, 'constructionText').setOrigin(0.5);
 
         this.HIText = this.add.image(this.scale.width/2 - 10, 10, 'highScoreText').setOrigin(1, 0);
         this.HIScoreNumbers = this.add.sprite(this.scale.width/2, 10, 'numberSpritesheet', 0).setFrame(1).setOrigin(1, 0);
