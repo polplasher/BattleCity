@@ -42,6 +42,7 @@ class Stage01 extends Phaser.Scene {
     this.time.delayedCall(2000, () => {
         this.powerUpManager.spawnPowerUp(200, 200, POWERUP.HELMET);
        this.powerUpManager.spawnPowerUp(250, 250, POWERUP.TANK);
+       this.powerUpManager.spawnPowerUp(150, 150, POWERUP.GRENADE);
     });
 
     this.addCollisions();
