@@ -2,6 +2,7 @@ import { BasePowerUp } from '../entities/items/BasePowerUp.js';
 import { Helmet } from '../entities/items/Helmet.js'; 
 import { TankItem } from '../entities/items/TankItem.js';
 import { Grenade } from '../entities/items/Grenade.js'; 
+import { Timer } from '../entities/items/Timer.js';
 import { POWERUP } from '../core/constants.js';
 
 class PowerUpManager {
@@ -27,6 +28,10 @@ class PowerUpManager {
             case 'grenade':      
                 powerup = new Grenade(this.scene, x, y);
                 break;
+                case POWERUP.TIMER:
+            case 'timer':
+                powerup = new Timer(this.scene, x, y);
+                break;  
 
             default:
                 console.warn(`Clase para ${type} no implementada, usando BasePowerUp genérico.`);

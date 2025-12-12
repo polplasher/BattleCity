@@ -29,6 +29,10 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.bulletManager = null;
         this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
 
+        // Estado para el PowerUp Timer
+        this.isFrozen = false; 
+        this.lastVelocity = { x: 0, y: 0 };
+
         this.createAnimations(textureKey);
         
         // Iniciar estado
@@ -42,6 +46,12 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
+
+        // Si está congelado, aseguramos que se quede quieto y salimos
+        if (this.isFrozen) {
+            this.body.setVelocity(0, 0);
+            return; 
+        }
 
         if (this.start) {
             this.body.setVelocity(0, this.moveSpeed * this.direction);
@@ -59,7 +69,6 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     colisionHandler() {
-        // Verificación de seguridad por si el body desapareció
         if (!this.body) return;
 
         const blocked = this.body.blocked;
@@ -113,7 +122,6 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    // ... (shoot, createAnimations, playAnimation se quedan igual) ...
     shoot() {
         if (!this.bulletManager || !this.active) return;
 
@@ -155,7 +163,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     takeDamage(amount = 1) {
-        if (!this.active) return; // Evitar daño si ya está muerto
+        if (!this.active) return;
 
         this.health -= amount;
         this.onHealthChanged();
@@ -168,32 +176,65 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     onHealthChanged() { }
 
     die() {
-        if (!this.active) return; // Evitar doble muerte
+        if (!this.active) return;
 
-        // 1. Desactivar inmediatamente para evitar más colisiones
         this.setActive(false);
         this.setVisible(false);
-        if (this.body) this.body.enable = false; // Desactivar física explícitamente
+        if (this.body) this.body.enable = false;
 
-        // 2. Emitir eventos
         this.scene.events.emit(EVENTS.ENEMY_DIED, { x: this.x, y: this.y, points: this.points });
         this.scene.events.emit(EVENTS.EXPLOSION_SPAWN, { x: this.x, y: this.y });
     }
 
     reset(x, y) {
-        // Reactivar todo
-        this.enableBody(true, x, y, true, true); // Método helper de Phaser para resetear body
+        this.enableBody(true, x, y, true, true);
         this.setActive(true);
         this.setVisible(true);
         
-        // Restaurar estado
         this.health = this.initialHealth;
         this.start = true;
+        this.isFrozen = false;
+        this.lastVelocity = { x: 0, y: 0 }; 
         this.clearTint();
         this.onHealthChanged();
         
-        // Reiniciar timer de disparo para que no disparen todos a la vez al nacer
         this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
+    }
+
+
+    freeze() {
+        if (!this.active) return;
+        
+        // 1. Guardamos la velocidad actual ANTES de detenerlo
+        this.lastVelocity = { 
+            x: this.body.velocity.x, 
+            y: this.body.velocity.y 
+        };
+
+        this.isFrozen = true;
+        this.body.setVelocity(0, 0);
+        this.anims.stop();
+    }
+
+    unfreeze() {
+        if (!this.active) return;
+        this.isFrozen = false;
+        
+        // 2. Restauramos la velocidad guardada
+        if (this.lastVelocity) {
+            this.body.setVelocity(this.lastVelocity.x, this.lastVelocity.y);
+            
+            // forzamos movimiento por si acaso
+            if (this.lastVelocity.x === 0 && this.lastVelocity.y === 0) {
+                 this.body.setVelocity(0, this.moveSpeed);
+            }
+        }
+        
+        // 3. Reanudamos la animación
+        const currentAnim = this.anims.currentAnim;
+        if (currentAnim) {
+            this.anims.play(currentAnim.key, true);
+        }
     }
 }
 
