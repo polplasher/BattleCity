@@ -1,6 +1,5 @@
-import { ENEMY } from '../../core/constants.js';
+import { ENEMY, OBSTACLE, GAME_SIZE } from '../../core/constants.js';
 import { EVENTS } from '../../core/events.js';
-import { GAME_SIZE } from '../../core/constants.js';
 
 class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, textureKey, health, points, speed, bulletSpeed) {
@@ -9,33 +8,36 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         
-        // Guardamos stats iniciales para poder resetear luego
+       // Guardamos stats iniciales para poder resetear luego
         this.initialHealth = health;
         this.points = points;
         this.moveSpeed = speed;
         this.bulletSpeed = bulletSpeed;
 
-        // Configuración física
+         // Configuración física
         this.body.setCollideWorldBounds(true);
         this.body.setAllowGravity(false);
-        this.setImmovable(true);
-        
-        // Habilitar evento de colisión con world bounds
-        this.body.onWorldBounds = true;
+        this.setImmovable(false); 
+        this.body.onWorldBounds = true; // Para detectar bordes del mundo
 
-        // Estado interno
-        this.direction = -1;
+        // Estado interno de IA
+        this.currentDir = 'down'; 
+        this.directionTimer = 0;
+        this.changeDirTime = 2000; // Tiempo cambio direc
+        
+         // Estado interno
         this.start = true;
         this.bulletManager = null;
         this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
-
-        // Estado para el PowerUp Timer
-        this.isFrozen = false; 
+        
+        // PowerUps
+        this.isFrozen = false;
+        this.isPowerUpCarrier = false;
         this.lastVelocity = { x: 0, y: 0 };
 
         this.createAnimations(textureKey);
         
-        // Iniciar estado
+         // Iniciar estado
         this.health = this.initialHealth;
         this.onHealthChanged();
     }
@@ -44,99 +46,147 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.bulletManager = manager;
     }
 
+   
+
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
-
-        // Si está congelado, aseguramos que se quede quieto y salimos
+//mirar si esta quieto
         if (this.isFrozen) {
             this.body.setVelocity(0, 0);
-            return; 
+            return;
         }
 
-        if (this.start) {
-            this.body.setVelocity(0, this.moveSpeed * this.direction);
-            this.playAnimation('up');
-            this.start = false;
-        }
-
-        this.colisionHandler();
-
+        
         this.shootTimer -= delta;
         if (this.shootTimer <= 0) {
             this.shoot();
             this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
         }
+
+       
+        this.updateMovement(delta);
     }
 
-    colisionHandler() {
-        if (!this.body) return;
+    updateMovement(delta) {
+        // 1. Verificar colisiones 
+        if (this.body.blocked.none === false || this.checkWorldBounds()) {
+            this.changeDirection(true); // true = forzado por colisión
+            return;
+        }
 
-        const blocked = this.body.blocked;
-        const halfWidth = this.body.width / 2;
-        const halfHeight = this.body.height / 2;
+        // 2. Timer para cambiar de dirección aleatoriamente 
+        this.directionTimer -= delta;
+        if (this.directionTimer <= 0) {
+            this.changeDirection(false); // false = girar
+            this.directionTimer = Phaser.Math.Between(1000, 4000);
+        }
+
         
-        // Detectar bordes de pantalla manualmente
-        const atLeftEdge = this.x - halfWidth <= 0;
-        const atRightEdge = this.x + halfWidth >= GAME_SIZE.WIDTH;
-        const atTopEdge = this.y - halfHeight <= 0;
-        const atBottomEdge = this.y + halfHeight >= GAME_SIZE.HEIGHT;
+        this.applyVelocity();
+    }
+
+   //velocidad según direccion
+    applyVelocity() {
+        const speed = this.moveSpeed;
         
-        // Combinar colisiones físicas con bordes de pantalla
-        const blockedLeft = blocked.left || atLeftEdge;
-        const blockedRight = blocked.right || atRightEdge;
-        const blockedUp = blocked.up || atTopEdge;
-        const blockedDown = blocked.down || atBottomEdge;
+        switch (this.currentDir) {
+            case 'up':    this.body.setVelocity(0, -speed); break;
+            case 'down':  this.body.setVelocity(0, speed);  break;
+            case 'left':  this.body.setVelocity(-speed, 0); break;
+            case 'right': this.body.setVelocity(speed, 0);  break;
+        }
         
-        if (blockedLeft || blockedRight || blockedUp || blockedDown) {
-            // Obtener direcciones válidas (no bloqueadas)
-            const validDirections = [];
-            
-            if (!blockedUp) validDirections.push('up');
-            if (!blockedDown) validDirections.push('down');
-            if (!blockedLeft) validDirections.push('left');
-            if (!blockedRight) validDirections.push('right');
-            
-            // Elegir una dirección válida aleatoria
-            if (validDirections.length > 0) {
-                const newDir = Phaser.Utils.Array.GetRandom(validDirections);
-                
-                switch (newDir) {
-                    case 'up':
-                        this.body.setVelocity(0, -this.moveSpeed);
-                        this.playAnimation('up');
-                        break;
-                    case 'down':
-                        this.body.setVelocity(0, this.moveSpeed);
-                        this.playAnimation('down');
-                        break;
-                    case 'left':
-                        this.body.setVelocity(-this.moveSpeed, 0);
-                        this.playAnimation('left');
-                        break;
-                    case 'right':
-                        this.body.setVelocity(this.moveSpeed, 0);
-                        this.playAnimation('right');
-                        break;
-                }
-            }
+        this.playAnimation(this.currentDir);
+    }
+
+   
+    changeDirection(causedByCollision) {
+        const directions = ['up', 'down', 'left', 'right'];
+        let validDirections = [];
+
+        if (causedByCollision) {
+            // Si chocamos
+            validDirections = directions.filter(d => d !== this.currentDir);
+        } else {
+            // si es por timer elegir aleatoria pero con prioridad de 90g
+            validDirections = directions;
+        }
+
+        // Elegir nueva dirección aleatoria
+        const newDir = Phaser.Utils.Array.GetRandom(validDirections);
+
+        //alineamos
+        if (this.isPerpendicular(this.currentDir, newDir)) {
+            this.alignToGrid();
+        }
+
+        this.currentDir = newDir;
+        
+        // Resetear timer 
+        this.directionTimer = Phaser.Math.Between(1000, 3000);
+    }
+
+    /**
+     * Alinea el tanque a la rejilla para facilitar giros perfectos.
+     * Esto evita que el tanque se atasque 
+     */
+    alignToGrid() {
+        const blockSize = OBSTACLE.BLOCK_SIZE || 16; 
+        
+        if (this.currentDir === 'left' || this.currentDir === 'right') {
+           
+            this.x = Math.round(this.x / blockSize) * blockSize; // + blockSize/2 si el origen es 0
+        } else {
+            // Viceversa
+            this.y = Math.round(this.y / blockSize) * blockSize;
         }
     }
 
+    isPerpendicular(dirA, dirB) {
+        const isHorizontalA = (dirA === 'left' || dirA === 'right');
+        const isHorizontalB = (dirB === 'left' || dirB === 'right');
+        return isHorizontalA !== isHorizontalB;
+    }
+
+    checkWorldBounds() {
+        // body.blocked a veces falla con world bounds si no está configurado explícitamente,
+        // así que hacemos una doble verificación simple.
+        const margin = 2;
+        const x = this.x;
+        const y = this.y;
+        const hw = this.body.width / 2;
+        const hh = this.body.height / 2;
+
+        if (this.currentDir === 'left' && x - hw <= margin) return true;
+        if (this.currentDir === 'right' && x + hw >= GAME_SIZE.WIDTH - margin) return true;
+        if (this.currentDir === 'up' && y - hh <= margin) return true;
+        if (this.currentDir === 'down' && y + hh >= GAME_SIZE.HEIGHT - margin) return true;
+        
+        return false;
+    }
+
+    // ... Resto de métodos (shoot, animations, takeDamage, die, reset, freeze, unfreeze) se mantienen igual ...
+    
     shoot() {
         if (!this.bulletManager || !this.active) return;
 
+        // Calculamos velocidad de bala basada en la dirección ACTUAL, no en la velocidad del cuerpo
+        // (ya que alignToGrid podría haber detenido el cuerpo momentáneamente)
         let vx = 0;
         let vy = 0;
         const bSpeed = this.bulletSpeed;
 
-        if (this.body.velocity.x > 0) vx = bSpeed;
-        else if (this.body.velocity.x < 0) vx = -bSpeed;
-        else if (this.body.velocity.y > 0) vy = bSpeed;
-        else if (this.body.velocity.y < 0) vy = -bSpeed;
-        else vy = bSpeed;
+        switch (this.currentDir) {
+            case 'up': vy = -bSpeed; break;
+            case 'down': vy = bSpeed; break;
+            case 'left': vx = -bSpeed; break;
+            case 'right': vx = bSpeed; break;
+        }
 
         this.bulletManager.fire(this.x, this.y, vx, vy);
     }
+    
+
 
     createAnimations(textureKey) {
         if (this.scene.anims.exists(textureKey + '_up')) return;
@@ -158,24 +208,24 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
     playAnimation(direction) {
         if(this.active) {
-            this.anims.play(this.texture.key + '_' + direction, true);
+            const animKey = this.texture.key + '_' + direction;
+            // Solo reiniciar animación si es diferente 
+            if (!this.anims.currentAnim || this.anims.currentAnim.key !== animKey || !this.anims.isPlaying) {
+                this.anims.play(animKey, true);
+            }
         }
     }
 
     takeDamage(amount = 1) {
         if (!this.active) return;
-
         this.health -= amount;
         this.onHealthChanged();
-
-        if (this.health <= 0) {
-            this.die();
-        }
+        if (this.health <= 0) this.die();
     }
+    
+    onHealthChanged() {}
 
-    onHealthChanged() { }
-
-    die() {
+     die() {
         if (!this.active) return;
 
         this.setActive(false);
@@ -186,7 +236,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.scene.events.emit(EVENTS.EXPLOSION_SPAWN, { x: this.x, y: this.y });
     }
 
-    reset(x, y) {
+      reset(x, y) {
         this.enableBody(true, x, y, true, true);
         this.setActive(true);
         this.setVisible(true);
@@ -200,8 +250,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         
         this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
     }
-
-
+  
     freeze() {
         if (!this.active) return;
         
@@ -219,22 +268,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     unfreeze() {
         if (!this.active) return;
         this.isFrozen = false;
-        
-        // 2. Restauramos la velocidad guardada
-        if (this.lastVelocity) {
-            this.body.setVelocity(this.lastVelocity.x, this.lastVelocity.y);
-            
-            // forzamos movimiento por si acaso
-            if (this.lastVelocity.x === 0 && this.lastVelocity.y === 0) {
-                 this.body.setVelocity(0, this.moveSpeed);
-            }
-        }
-        
-        // 3. Reanudamos la animación
-        const currentAnim = this.anims.currentAnim;
-        if (currentAnim) {
-            this.anims.play(currentAnim.key, true);
-        }
+        this.applyVelocity(); 
     }
 }
 
