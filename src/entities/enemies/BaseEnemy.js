@@ -126,16 +126,14 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.directionTimer = Phaser.Math.Between(1000, 3000);
     }
 
-    /**
-     * Alinea el tanque a la rejilla para facilitar giros perfectos.
-     * Esto evita que el tanque se atasque 
-     */
+   // Alinea el tanque a la rejilla para facilitar giros perfectos.
+     
     alignToGrid() {
         const blockSize = OBSTACLE.BLOCK_SIZE || 16; 
         
         if (this.currentDir === 'left' || this.currentDir === 'right') {
            
-            this.x = Math.round(this.x / blockSize) * blockSize; // + blockSize/2 si el origen es 0
+            this.x = Math.round(this.x / blockSize) * blockSize; 
         } else {
             // Viceversa
             this.y = Math.round(this.y / blockSize) * blockSize;
@@ -149,8 +147,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     checkWorldBounds() {
-        // body.blocked a veces falla con world bounds si no está configurado explícitamente,
-        // así que hacemos una doble verificación simple.
+                
         const margin = 2;
         const x = this.x;
         const y = this.y;
@@ -165,13 +162,11 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         return false;
     }
 
-    // ... Resto de métodos (shoot, animations, takeDamage, die, reset, freeze, unfreeze) se mantienen igual ...
+    
     
     shoot() {
         if (!this.bulletManager || !this.active) return;
 
-        // Calculamos velocidad de bala basada en la dirección ACTUAL, no en la velocidad del cuerpo
-        // (ya que alignToGrid podría haber detenido el cuerpo momentáneamente)
         let vx = 0;
         let vy = 0;
         const bSpeed = this.bulletSpeed;
