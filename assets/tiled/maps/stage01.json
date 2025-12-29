@@ -10276,6 +10276,18 @@
                  "width":4,
                  "x":284,
                  "y":144
+                }, 
+                {
+                 "gid":2,
+                 "height":8,
+                 "id":3145,
+                 "name":"",
+                 "rotation":0,
+                 "type":"SteelWall",
+                 "visible":true,
+                 "width":8,
+                 "x":180,
+                 "y":240
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -10284,7 +10296,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":3145,
+ "nextobjectid":3146,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
