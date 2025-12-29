@@ -16,30 +16,53 @@ class ScoreMenu extends Phaser.Scene {
     create() {
         this.cameras.main.setBackgroundColor('#111');
 
-        this.basicDefeated = 15;
-        this.fastDefeated = 8;
-        this.powerDefeated = 5;
-        this.heavyDefeated = 2;
+        this.basicDefeated = 6;
+        this.fastDefeated = 2;
+        this.powerDefeated = 0;
+        this.heavyDefeated = 0;
 
         this.add.text(this.scale.width / 2, 10, 'Score Menu', { fontSize: '16px', fill: '#ddd' }).setOrigin(0.5);
         
-        this.add.sprite(this.scale.width / 2 - 30, 120, 'numberSpritesheet', Math.floor(this.basicDefeated/10));
+        //Basic Tanks count
+        this.add.sprite(this.scale.width / 2 - 68, 120, 'numberSpritesheet', Math.floor(this.basicDefeated/10));
+        this.add.sprite(this.scale.width / 2 - 60, 120, 'numberSpritesheet', this.basicDefeated%10);
+        this.add.image(this.scale.width / 2 - 48, 119, '00Text');
+        this.add.sprite(this.scale.width / 2 - 28, 120, 'numberSpritesheet', Math.floor(this.basicDefeated/10));
         this.add.sprite(this.scale.width / 2 - 20, 120, 'numberSpritesheet', this.basicDefeated%10);
         this.add.image(this.scale.width / 2, 120, 'tank_basic');
 
-        this.add.sprite(this.scale.width / 2 - 30, 140, 'numberSpritesheet', Math.floor(this.fastDefeated/10));
+        //Fast Tanks count
+        this.add.sprite(this.scale.width / 2 - 68, 140, 'numberSpritesheet', Math.floor((this.fastDefeated*2)/10));
+        this.add.sprite(this.scale.width / 2 - 60, 140, 'numberSpritesheet', (this.fastDefeated*2)%10);
+        this.add.image(this.scale.width / 2 - 48, 139, '00Text');
+        this.add.sprite(this.scale.width / 2 - 28, 140, 'numberSpritesheet', Math.floor(this.fastDefeated/10));
         this.add.sprite(this.scale.width / 2 - 20, 140, 'numberSpritesheet', this.fastDefeated%10);
         this.add.image(this.scale.width / 2, 140, 'tank_fast');
 
-        this.add.sprite(this.scale.width / 2 - 30, 160, 'numberSpritesheet', Math.floor(this.powerDefeated/10));
+        //Power Tanks count
+        this.add.sprite(this.scale.width / 2 - 68, 160, 'numberSpritesheet', Math.floor((this.powerDefeated*2)/10));
+        this.add.sprite(this.scale.width / 2 - 60, 160, 'numberSpritesheet', (this.powerDefeated*2)%10);
+        this.add.image(this.scale.width / 2 - 48, 159, '00Text');
+        this.add.sprite(this.scale.width / 2 - 28, 160, 'numberSpritesheet', Math.floor(this.powerDefeated/10));
         this.add.sprite(this.scale.width / 2 - 20, 160, 'numberSpritesheet', this.powerDefeated%10);
         this.add.image(this.scale.width / 2, 160, 'tank_power');
 
-        this.add.sprite(this.scale.width / 2 - 30, 180, 'numberSpritesheet', Math.floor(this.heavyDefeated/10));
+        //Heavy Tanks count
+        this.add.sprite(this.scale.width / 2 - 68, 180, 'numberSpritesheet', Math.floor((this.heavyDefeated*2)/10));
+        this.add.sprite(this.scale.width / 2 - 60, 180, 'numberSpritesheet', (this.heavyDefeated*2)%10);
+        this.add.image(this.scale.width / 2 - 48, 179, '00Text');
+        this.add.sprite(this.scale.width / 2 - 28, 180, 'numberSpritesheet', Math.floor(this.heavyDefeated/10));
         this.add.sprite(this.scale.width / 2 - 20, 180, 'numberSpritesheet', this.heavyDefeated%10);
         this.add.image(this.scale.width / 2, 180, 'tank_armor');
     
-
+        //Total Tanks count
+        this.totalTankNumber = this.basicDefeated + this.fastDefeated + this.powerDefeated + this.heavyDefeated;
+        this.add.sprite(this.scale.width / 2 - 68, 200, 'numberSpritesheet', Math.floor((this.totalTankNumber)/10));
+        this.add.sprite(this.scale.width / 2 - 60, 200, 'numberSpritesheet', (this.totalTankNumber)%10);
+        this.add.image(this.scale.width / 2 - 48, 199, '00Text');
+        this.add.sprite(this.scale.width / 2 - 28, 200, 'numberSpritesheet', Math.floor(this.totalTankNumber/10));
+        this.add.sprite(this.scale.width / 2 - 20, 200, 'numberSpritesheet', this.totalTankNumber%10);
+        this.add.text(this.scale.width / 2 - 10, 200, 'TOTAL', { fontSize: '10px', fill: '#fff' }).setOrigin(0, 0.5);
 
         const centerX = this.scale.width / 2;
         const topScore = highScoreManager.getTopScore();
@@ -74,7 +97,7 @@ class ScoreMenu extends Phaser.Scene {
 
         // Si es highscore nuevo
         if (this.isHighScore && this.playerScore > 0) {
-            this.add.text(centerX, 140, '★ NEW HIGH SCORE! ★', {
+            this.add.text(centerX, 220, '★ NEW HIGH SCORE! ★', {
                 fontSize: '10px',
                 fill: '#ff0'
             }).setOrigin(0.5);
@@ -86,14 +109,14 @@ class ScoreMenu extends Phaser.Scene {
         // Motivo de game over
         if (this.reason) {
             const reasonText = this.reason === 'base-destroyed' ? 'BASE DESTROYED' : 'NO LIVES LEFT';
-            this.add.text(centerX, 180, reasonText, {
+            this.add.text(centerX, 55, reasonText, {
                 fontSize: '10px',
                 fill: '#f44'
             }).setOrigin(0.5);
         }
 
         // Instrucción para continuar
-        this.add.text(centerX, 220, 'PRESS ENTER TO CONTINUE', {
+        this.add.text(centerX, 240, 'PRESS ENTER TO CONTINUE', {
             fontSize: '8px',
             fill: '#888'
         }).setOrigin(0.5);
