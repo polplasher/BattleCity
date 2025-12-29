@@ -18,6 +18,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
+        // Make the physical hitbox smaller than the 16x16 sprite and center it
+        if (this.body) {
+            this.body.setSize(10, 10);
+            this.body.setOffset(2, 2);
+        }
+
         // Propiedades del player
         this.facing = 'down';
         this.lastShot = 0;
