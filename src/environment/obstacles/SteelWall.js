@@ -5,11 +5,7 @@ class SteelWall extends BaseObstacle {
 
     static preload(scene) {
         scene.load.setPath('assets/sprites');
-        scene.load.image('steel_wall', 'environment/steel_wall.png');
-    }
-
-    onHit(bullet) {
-        // TODO: Special bullets can destroy steel walls
+        scene.load.image('steel_wall', 'environment/steel_tile.png');
     }
 }
 

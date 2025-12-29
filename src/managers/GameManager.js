@@ -27,10 +27,10 @@ class GameManager {
     onEnemyDied(data) {
         this.addScore(data.points);
     }
-   
+
     onPowerUpCollected(data) {
         this.addScore(POWERUP.POINTS);
-    }    
+    }
 
     addScore(points) {
         if (this.isGameOver) return;
@@ -74,14 +74,14 @@ class GameManager {
 
         this.isVictory = true;
         this.isGameOver = true;
-        
+
         // Verificar si es highscore
         const isHighScore = highScoreManager.isHighScore(this.score);
-        
-        this.scene.events.emit(EVENTS.GAME_VICTORY, { 
-            score: this.score, 
+
+        this.scene.events.emit(EVENTS.GAME_VICTORY, {
+            score: this.score,
             stage: this.stage,
-            isHighScore 
+            isHighScore
         });
 
         // Opcional: cambiar a escena de victoria después de un delay
@@ -94,24 +94,24 @@ class GameManager {
         if (this.isGameOver) return;
 
         this.isGameOver = true;
-        
+
         // Verificar si es highscore
         const isHighScore = highScoreManager.isHighScore(this.score);
-        
-        this.scene.events.emit(EVENTS.GAME_DEFEAT, { 
-            reason, 
+
+        this.scene.events.emit(EVENTS.GAME_DEFEAT, {
+            reason,
             score: this.score,
             stage: this.stage,
-            isHighScore 
+            isHighScore
         });
 
         // Cambiar a escena de score 
         this.scene.time.delayedCall(2000, () => {
-            this.scene.scene.start('ScoreMenuScene', { 
-                score: this.score, 
+            this.scene.scene.start('ScoreMenuScene', {
+                score: this.score,
                 stage: this.stage,
                 reason,
-                isHighScore 
+                isHighScore
             });
         });
     }

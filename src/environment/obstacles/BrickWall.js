@@ -7,7 +7,7 @@ class BrickWall extends BaseObstacle {
     
     static preload(scene) {
         scene.load.setPath('assets/sprites');
-        scene.load.image('brick_wall', 'environment/destructible_test.png');
+        scene.load.image('brick_wall', 'environment/brick_tile.png');
     }
 
     onHit(bullet) {

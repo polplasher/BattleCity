@@ -12,14 +12,22 @@ import { POWERUP } from '../core/constants.js';
 class Stage01 extends Phaser.Scene {
   constructor() { super({ key: "Stage01" }); }
 
+  preload() {
+    // Load Tiled map
+    this.load.setPath('assets/tiled/maps');
+    this.load.tilemapTiledJSON('stage01', 'stage01.json');
+  }
+
   create() {
     this.cameras.main.setBackgroundColor('#111');
     this.createManagers();
 
     this.keys = this.input.keyboard.addKeys('I');
-    this.spawnManager.startLevel(1);
 
-    // Bullet pool
+    // Load map from Tiled
+    this.loadMapFromTiled();
+
+    // Bullet pools
     this.bulletPool = this.bulletManager.getPool();
     this.enemyBulletPool = this.enemyBulletManager.getPool();
 
@@ -27,26 +35,54 @@ class Stage01 extends Phaser.Scene {
     this.player = new Player(this, this.scale.width / 2, this.scale.height / 2, 'tank');
     this.player.scene.bulletManager = this.bulletManager;
 
-    // Base aliada (se añade al grupo de obstáculos)
-    this.allyBase = this.obstacleManager.createAllyBase(this.scale.width / 2, this.scale.height - 30);
+    // Start spawning enemies
+    this.spawnManager.startLevel(1);
 
-    // Crear obstáculos. Se hará desde Tiled más adelante
-    this.obstacleManager.createFromArray([
-      { x: 100, y: 100 }, { x: 200, y: 150 },
-      { x: 150, y: 200 }, { x: 300, y: 120 },
-      { x: 300, y: 250 }, { x: 318, y: 233 },
-      { x: 250, y: 233 }
-    ]);
-
-    //Para probar powerups
+    // Test powerups (optional)
     this.time.delayedCall(2000, () => {
-        this.powerUpManager.spawnPowerUp(200, 200, POWERUP.HELMET);
-       this.powerUpManager.spawnPowerUp(250, 250, POWERUP.TANK);
-       this.powerUpManager.spawnPowerUp(150, 150, POWERUP.GRENADE);
-       this.powerUpManager.spawnPowerUp(100, 100, POWERUP.TIMER);
+      this.powerUpManager.spawnPowerUp(200, 200, POWERUP.HELMET);
+      this.powerUpManager.spawnPowerUp(250, 250, POWERUP.TANK);
+      this.powerUpManager.spawnPowerUp(150, 150, POWERUP.GRENADE);
+      this.powerUpManager.spawnPowerUp(100, 100, POWERUP.TIMER);
     });
 
     this.addCollisions();
+  }
+
+  loadMapFromTiled() {
+    // Create tilemap
+    this.map = this.make.tilemap({ key: 'stage01' });
+
+    // Load obstacles from object layer
+    const obstaclesLayer = this.map.getObjectLayer('obstacles');
+
+    if (!obstaclesLayer) {
+      console.warn('No obstacles layer found in Tiled map');
+      return;
+    }
+
+    obstaclesLayer.objects.forEach(obj => {
+      // Tiled uses top-left origin, adjust if needed
+      const x = obj.x + (obj.width / 2);
+      const y = obj.y + (obj.height / 2);
+
+      switch (obj.type) {
+        case 'BrickWall':
+          this.obstacleManager.createBrickWall(x, y);
+          break;
+
+        case 'SteelWall':
+          this.obstacleManager.createSteelWall(x, y);
+          break;
+
+        case 'AllyBase':
+          this.allyBase = this.obstacleManager.createAllyBase(x, y);
+          break;
+
+        default:
+          console.warn(`Unknown obstacle type: ${obj.type}`);
+      }
+    });
   }
 
   createManagers() {
@@ -58,8 +94,6 @@ class Stage01 extends Phaser.Scene {
     this.explosionManager = new ExplosionManager(this);
     this.spawnManager = new SpawnManager(this, this.enemyManager);
     this.scorePopupManager = new ScorePopupManager(this);
-    
-    // Inicializar el Manager de PowerUps
     this.powerUpManager = new PowerUpManager(this);
   }
 
@@ -68,7 +102,7 @@ class Stage01 extends Phaser.Scene {
     this.physics.add.collider(this.player, this.obstacleManager.getGroup());
     this.physics.add.collider(this.player, this.enemyManager.getGroup());
 
-    //PowerUps collision
+    // PowerUps collision
     this.powerUpManager.setupCollision(this.player);
 
     // Player bullet collisions
@@ -99,7 +133,7 @@ class Stage01 extends Phaser.Scene {
     );
   }
 
- update(time, delta) {
+  update(time, delta) {
     this.spawnManager.update(time, delta);
     if (this.player) this.player.update();
 
