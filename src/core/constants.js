@@ -8,7 +8,7 @@ export const PHYSICS =
 {
     TYPE: 'arcade',
     GRAVITY: 0,
-    DEBUG: false
+    DEBUG: true
 }
 
 export const PLAYER =

@@ -22,7 +22,7 @@
          "name":"obstacles",
          "objects":[
                 {
-                 "gid":2,
+                 "gid":17,
                  "height":8,
                  "id":508,
                  "name":"",
@@ -34,7 +34,7 @@
                  "y":152
                 }, 
                 {
-                 "gid":2,
+                 "gid":17,
                  "height":8,
                  "id":510,
                  "name":"",
@@ -46,7 +46,7 @@
                  "y":152
                 }, 
                 {
-                 "gid":2,
+                 "gid":17,
                  "height":8,
                  "id":511,
                  "name":"",
@@ -58,7 +58,7 @@
                  "y":152
                 }, 
                 {
-                 "gid":2,
+                 "gid":17,
                  "height":8,
                  "id":512,
                  "name":"",
@@ -70,7 +70,7 @@
                  "y":152
                 }, 
                 {
-                 "gid":2,
+                 "gid":17,
                  "height":8,
                  "id":515,
                  "name":"",
@@ -82,7 +82,7 @@
                  "y":88
                 }, 
                 {
-                 "gid":2,
+                 "gid":17,
                  "height":8,
                  "id":516,
                  "name":"",
@@ -94,7 +94,7 @@
                  "y":88
                 }, 
                 {
-                 "gid":2,
+                 "gid":17,
                  "height":8,
                  "id":2078,
                  "name":"",
@@ -106,7 +106,7 @@
                  "y":96
                 }, 
                 {
-                 "gid":2,
+                 "gid":17,
                  "height":8,
                  "id":2079,
                  "name":"",
@@ -10276,18 +10276,6 @@
                  "width":4,
                  "x":284,
                  "y":144
-                }, 
-                {
-                 "gid":2,
-                 "height":8,
-                 "id":3145,
-                 "name":"",
-                 "rotation":0,
-                 "type":"SteelWall",
-                 "visible":true,
-                 "width":8,
-                 "x":180,
-                 "y":240
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -10307,7 +10295,7 @@
          "source":"brick_tile.tsx"
         }, 
         {
-         "firstgid":2,
+         "firstgid":17,
          "source":"steel_tile.tsx"
         }],
  "tilewidth":4,

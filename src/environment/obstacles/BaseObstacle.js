@@ -1,8 +1,8 @@
 class BaseObstacle extends Phaser.Physics.Arcade.Sprite {
-    static preload(scene) { } // Implemented by subclasses
+    static preload(scene) { }
 
     constructor(scene, x, y, textureKey, config = {}) {
-        super(scene, x, y, textureKey);
+        super(scene, x, y, textureKey, config.frame);
 
         scene.add.existing(this);
         scene.physics.add.existing(this, true);

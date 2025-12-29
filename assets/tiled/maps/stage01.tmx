@@ -4,19 +4,19 @@
   <export target="stage01.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="brick_tile.tsx"/>
- <tileset firstgid="2" source="steel_tile.tsx"/>
+ <tileset firstgid="17" source="steel_tile.tsx"/>
  <imagelayer id="6" name="reference" opacity="0.2" offsetx="80" offsety="32">
   <image source="references/stage_ref.png" width="208" height="208"/>
  </imagelayer>
  <objectgroup id="7" name="obstacles">
-  <object id="508" type="SteelWall" gid="2" x="80" y="152" width="8" height="8"/>
-  <object id="510" type="SteelWall" gid="2" x="88" y="152" width="8" height="8"/>
-  <object id="511" type="SteelWall" gid="2" x="272" y="152" width="8" height="8"/>
-  <object id="512" type="SteelWall" gid="2" x="280" y="152" width="8" height="8"/>
-  <object id="515" type="SteelWall" gid="2" x="176" y="88" width="8" height="8"/>
-  <object id="516" type="SteelWall" gid="2" x="184" y="88" width="8" height="8"/>
-  <object id="2078" type="SteelWall" gid="2" x="176" y="96" width="8" height="8"/>
-  <object id="2079" type="SteelWall" gid="2" x="184" y="96" width="8" height="8"/>
+  <object id="508" type="SteelWall" gid="17" x="80" y="152" width="8" height="8"/>
+  <object id="510" type="SteelWall" gid="17" x="88" y="152" width="8" height="8"/>
+  <object id="511" type="SteelWall" gid="17" x="272" y="152" width="8" height="8"/>
+  <object id="512" type="SteelWall" gid="17" x="280" y="152" width="8" height="8"/>
+  <object id="515" type="SteelWall" gid="17" x="176" y="88" width="8" height="8"/>
+  <object id="516" type="SteelWall" gid="17" x="184" y="88" width="8" height="8"/>
+  <object id="2078" type="SteelWall" gid="17" x="176" y="96" width="8" height="8"/>
+  <object id="2079" type="SteelWall" gid="17" x="184" y="96" width="8" height="8"/>
   <object id="2080" type="BrickWall" gid="1" x="224" y="52" width="4" height="4"/>
   <object id="2088" type="BrickWall" gid="1" x="228" y="52" width="4" height="4"/>
   <object id="2089" type="BrickWall" gid="1" x="232" y="52" width="4" height="4"/>

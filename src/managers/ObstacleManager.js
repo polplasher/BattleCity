@@ -49,7 +49,17 @@ class ObstacleManager {
     }
 
     createBrickWall(x, y) {
-        return this.createObstacle(BrickWall, x, y);
+        // Calculate variant (0-15) based on world position
+        // Creates a 4x4 repeating tile pattern
+        const gridX = Math.floor(x / 4);
+        const gridY = Math.floor(y / 4);
+        
+        // Calculate which tile from the 4x4 grid (0-15)
+        const variant = (gridY % 4) * 4 + (gridX % 4);
+        
+        const brick = new BrickWall(this.scene, x, y, variant);
+        this.obstacles.add(brick);
+        return brick;
     }
 
     onBulletHitObstacle(bullet, obstacle) {
