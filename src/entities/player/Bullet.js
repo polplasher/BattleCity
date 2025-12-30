@@ -16,7 +16,13 @@ class Bullet extends Phaser.GameObjects.Sprite {
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
 
-    if (this.x < 0 || this.x > GAME_SIZE.WIDTH || this.y < 0 || this.y > GAME_SIZE.HEIGHT) {
+    
+    const worldBounds = this.scene.physics.world.bounds;
+
+   
+    if (this.x < worldBounds.x || this.x > worldBounds.width || 
+        this.y < worldBounds.y || this.y > worldBounds.height) {
+      
       this.setActive(false);
       this.setVisible(false);
       if (this.body) this.body.reset(-100, -100);

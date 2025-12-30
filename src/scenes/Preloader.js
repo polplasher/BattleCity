@@ -17,7 +17,7 @@ class Preloader extends Phaser.Scene {
     constructor() { super({ key: 'PreloaderScene' }); }
 
     preload() {
-        // Crear barra de progreso (opcional pero recomendado)
+        // Crear barra de progreso
         this.createLoadingBar();
 
         // Assets del menú
@@ -32,6 +32,12 @@ class Preloader extends Phaser.Scene {
         this.load.image('00Text', 'menus/text/double0Text.png');
         this.load.spritesheet('numberSpritesheet', 'menus/text/numbersWhite.png', { frameWidth: 8, frameHeight: 8 });
        
+        
+       
+        this.load.image('enemy_icon', 'menus/enemyIcon.png');
+        this.load.image('player_icon', 'menus/player1Icon.png'); 
+        this.load.image('flag_icon', 'menus/flagIcon.png');
+
         // Audio
         this.load.setPath('assets/audio');
         this.load.audio('start_jingle', 'StartLevelAudio.mp3');

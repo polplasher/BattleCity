@@ -27,7 +27,7 @@ export const SPAWN_CONFIG = {
     SPAWN_TIME_DELAY: 3000, 
     POSITIONS: [
         { x: 32, y: 32 },       
-        { x: 192, y: 32 },      
-        { x: 352, y: 32 }       
+        { x: 167, y: 32 },      
+        { x: 302, y: 32 }       
     ]
 };

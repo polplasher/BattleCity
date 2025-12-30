@@ -9,6 +9,7 @@ import { Preloader } from './scenes/Preloader.js';
 import { MainMenu } from './scenes/MainMenu.js';
 import { Stage01 } from './scenes/Stage01.js';
 import { ScoreMenu } from './scenes/ScoreMenu.js';
+import { Hud } from './scenes/Hud.js'; 
 
 const game = new Phaser.Game(
     buildConfig({
@@ -17,6 +18,7 @@ const game = new Phaser.Game(
             Preloader,  // Carga todos los assets primero
             MainMenu,   // Menú principal
             Stage01,    // Nivel 1
+            Hud,
             ScoreMenu   // Pantalla de puntuación
             // Hud     // si se lanza luego en paralelo (ya lo veremos)
         ],

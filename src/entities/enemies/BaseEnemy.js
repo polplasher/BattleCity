@@ -20,7 +20,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.setImmovable(false); 
         this.body.onWorldBounds = true; // Para detectar bordes del mundo
 
-        // Estado interno de IA
+        // IA
         this.currentDir = 'down'; 
         this.directionTimer = 0;
         this.changeDirTime = 2000; // Tiempo cambio direc
@@ -147,17 +147,19 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     checkWorldBounds() {
-                
+        // --- CAMBIO IMPORTANTE: Usar los límites físicos dinámicos en lugar de GAME_SIZE fijo ---
+        const worldBounds = this.scene.physics.world.bounds;
+        
         const margin = 2;
         const x = this.x;
         const y = this.y;
         const hw = this.body.width / 2;
         const hh = this.body.height / 2;
 
-        if (this.currentDir === 'left' && x - hw <= margin) return true;
-        if (this.currentDir === 'right' && x + hw >= GAME_SIZE.WIDTH - margin) return true;
-        if (this.currentDir === 'up' && y - hh <= margin) return true;
-        if (this.currentDir === 'down' && y + hh >= GAME_SIZE.HEIGHT - margin) return true;
+        if (this.currentDir === 'left' && x - hw <= worldBounds.x + margin) return true;
+        if (this.currentDir === 'right' && x + hw >= worldBounds.width - margin) return true; // Ahora respeta el borde del HUD
+        if (this.currentDir === 'up' && y - hh <= worldBounds.y + margin) return true;
+        if (this.currentDir === 'down' && y + hh >= worldBounds.height - margin) return true;
         
         return false;
     }

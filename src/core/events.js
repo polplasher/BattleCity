@@ -67,5 +67,8 @@ export const EVENTS =
 
 
     POWERUP_SPAWN: 'powerup:spawn',
-    POWERUP_COLLECTED: 'powerup:collected'
+    POWERUP_COLLECTED: 'powerup:collected',
+
+   
+    ENEMY_REMAINING_CHANGED: 'enemy:remaining_changed'
 };

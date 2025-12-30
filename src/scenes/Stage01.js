@@ -7,7 +7,7 @@ import { GameManager } from '../managers/GameManager.js';
 import { SpawnManager } from '../managers/SpawnManager.js';
 import { PowerUpManager } from '../managers/PowerUpManager.js';
 import { ScorePopupManager } from '../managers/ScorePopupManager.js';
-import { POWERUP } from '../core/constants.js';
+import { POWERUP, GAME_SIZE } from '../core/constants.js'; // --- IMPORTANTE: Añadido GAME_SIZE
 
 class Stage01 extends Phaser.Scene {
   constructor() { super({ key: "Stage01" }); }
@@ -20,7 +20,18 @@ class Stage01 extends Phaser.Scene {
 
   create() {
     this.cameras.main.setBackgroundColor('#111');
+    
+   
+    const HUD_WIDTH = 50;
+    const PLAYABLE_WIDTH = GAME_SIZE.WIDTH - HUD_WIDTH;
+
+   
+    this.physics.world.setBounds(0, 0, PLAYABLE_WIDTH, GAME_SIZE.HEIGHT);
+
     this.createManagers();
+
+    // Lanzar el HUD
+    this.scene.launch('HudScene');
 
     this.keys = this.input.keyboard.addKeys('I');
 
