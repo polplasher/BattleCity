@@ -11,8 +11,11 @@ class SpawnManager {
         this.currentSpawnIndex = 0; 
         this.isLevelActive = false;
         
+        this.enemiesKilledList = [];
         this.enemiesKilled = 0;
         this.totalLevelEnemies = 0; 
+
+        this.scoresList = [];
         
         this.scene.events.on(EVENTS.ENEMY_DIED, this.onEnemyDied, this);
     }
@@ -20,7 +23,7 @@ class SpawnManager {
     startLevel(levelNumber) {
         const levelData = LEVELS[levelNumber];
         if (!levelData) return;
-
+    
         // Copiamos la lista de enemigos
         this.enemyQueue = [...levelData.enemies];
         
@@ -75,10 +78,15 @@ class SpawnManager {
         
     }
 
-    onEnemyDied() {
+    onEnemyDied(data) {
         if (!this.isLevelActive) return;
 
         this.enemiesKilled++;
+        
+        const score = data.points;
+        
+        this.scoresList.push(score);
+          
 
         // Calculamos cuántos faltan por matar 
         const remaining = this.totalLevelEnemies - this.enemiesKilled;

@@ -222,7 +222,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     
     onHealthChanged() {}
 
-     die() {
+    die() {
         if (!this.active) return;
 
         this.setActive(false);

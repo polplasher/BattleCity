@@ -96,6 +96,8 @@ class Stage01 extends Phaser.Scene {
     });
   }
 
+
+
   createManagers() {
     this.gameManager = new GameManager(this);
     this.bulletManager = new BulletManager(this);
@@ -147,11 +149,18 @@ class Stage01 extends Phaser.Scene {
   update(time, delta) {
     this.spawnManager.update(time, delta);
     if (this.player) this.player.update();
-
+    if (!this.spawnManager.isLevelActive) {
+      this.registry.set('scoreSumary', this.spawnManager.scoresList ? this.spawnManager.scoresList : []);
+      console.log('Final Scores List:', this.spawnManager.scoresList);
+      this.scene.start("ScoreMenuScene");
+    }
     if (this.keys.I.isDown) {
+      this.registry.set('scoreSumary', this.spawnManager.scoresList ? this.spawnManager.scoresList : []);
+      console.log('Final Scores List:', this.spawnManager.scoresList);
       this.scene.start("ScoreMenuScene");
     }
   }
 }
+
 
 export { Stage01 };

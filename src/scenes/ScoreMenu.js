@@ -1,8 +1,10 @@
 import { highScoreManager } from '../managers/HighScoreManager.js';
+import { SpawnManager } from '../managers/SpawnManager.js';
 
 class ScoreMenu extends Phaser.Scene {
     constructor() {
         super({ key: "ScoreMenuScene" });
+        
     }
 
     init(data) {
@@ -11,15 +13,38 @@ class ScoreMenu extends Phaser.Scene {
         this.stage = data.stage || 1;
         this.reason = data.reason || '';
         this.isHighScore = data.isHighScore || false;
+        this.basicDefeated = 0;
+        this.fastDefeated = 0;
+        this.powerDefeated = 0;
+        this.heavyDefeated = 0;
     }
 
     create() {
+        
+        const scoreList = this.registry.get('scoreSumary');
         this.cameras.main.setBackgroundColor('#111');
+        for (var i = 0; i < scoreList.length; i++) {
+            switch(scoreList[i]) {
+                case 100:
+                    this.basicDefeated += 1;
+                    break;
+                case 200:
+                    this.fastDefeated += 1;
+                    break;  
+                case 300:
+                    this.powerDefeated += 1;
+                    break;
+                case 400:
+                    this.heavyDefeated += 1;
+                    break;
+                case 500:
+                        // power-up;; TODO
+                        break;
+                default:
+                    break;
+            }
+        }
 
-        this.basicDefeated = 6;
-        this.fastDefeated = 2;
-        this.powerDefeated = 0;
-        this.heavyDefeated = 0;
 
         this.add.text(this.scale.width / 2, 10, 'Score Menu', { fontSize: '16px', fill: '#ddd' }).setOrigin(0.5);
         
