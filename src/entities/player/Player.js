@@ -6,11 +6,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     static preload(scene) {
         scene.load.setPath('assets/sprites');
         scene.load.spritesheet('tank', 'tanks/yellow/tank1_yellow.png', { frameWidth: 16, frameHeight: 16 });
-        
+
         scene.load.setPath('assets/audio');
         scene.load.audio('tank_movement_sound', 'Battle City SFX (16).wav');
         scene.load.audio('explosion_sound', 'Battle City SFX (7).wav');
     }
+
     constructor(scene, x, y, key = 'player') {
         super(scene, x, y, key, 4);
 
@@ -47,7 +48,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         this.isInvulnerable = true;
-        
+
         if (!this.shieldVisual) {
             this.shieldVisual = this.scene.add.graphics();
         }
@@ -59,9 +60,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     takeDamage() {
-        if (this.isInvulnerable) {
-            return; 
-        }
+        if (this.isInvulnerable) return;
 
         this.scene.events.emit(EVENTS.PLAYER_DAMAGED);
         this.scene.events.emit(EVENTS.EXPLOSION_SPAWN, { x: this.x, y: this.y });
@@ -78,7 +77,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (this.isInvulnerable && this.shieldVisual) {
             this.shieldVisual.clear();
-            const color = Math.floor(time / 100) % 2 === 0 ? 0xffffff : 0x555555; 
+            const color = Math.floor(time / 100) % 2 === 0 ? 0xffffff : 0x555555;
             this.shieldVisual.lineStyle(2, color);
             this.shieldVisual.strokeRect(this.x - 9, this.y - 9, 18, 18);
         }
@@ -110,10 +109,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     handleMovement() {
         this.setVelocity(0, 0);
 
-        
-            
         if (this.keys.D.isDown) {
-            
             this.setVelocityX(this.speed);
             this.anims.play('tank_right', true);
             this.facing = 'right';
@@ -132,14 +128,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         } else {
             this.anims.stop();
             this.setFrame({ up: 0, left: 2, down: 4, right: 6 }[this.facing]);
-            
+
             // Stop movement sound when not moving
             if (this.sound) {
                 this.scene.sound.stopByKey('tank_movement_sound');
                 this.sound = false;
             }
         }
-        
+
         // Play movement sound when moving (only if not already playing)
         if ((this.body.velocity.x !== 0 || this.body.velocity.y !== 0) && !this.sound) {
             this.scene.sound.play('tank_movement_sound', { loop: true });
@@ -167,7 +163,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     canShoot() {
         const bulletPool = this.scene.bulletPool;
-        
+
         if (!bulletPool) return false;
 
         const activeCount = bulletPool.getMatching('active', true).length;
@@ -196,8 +192,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     createBulletFromPool(vx, vy) {
         const bulletPool = this.scene.bulletPool;
-        
-        if(!bulletPool) return;
+
+        if (!bulletPool) return;
 
         let bullet = bulletPool.getFirst(false);
         if (!bullet) {

@@ -7,37 +7,37 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        
-       // Guardamos stats iniciales para poder resetear luego
+
+        // Guardamos stats iniciales para poder resetear luego
         this.initialHealth = health;
         this.points = points;
         this.moveSpeed = speed;
         this.bulletSpeed = bulletSpeed;
 
-         // Configuración física
+        // Configuración física
         this.body.setCollideWorldBounds(true);
         this.body.setAllowGravity(false);
-        this.setImmovable(false); 
+        this.setImmovable(true); // Enemies cannot be pushed by player
         this.body.onWorldBounds = true; // Para detectar bordes del mundo
 
         // IA
-        this.currentDir = 'down'; 
+        this.currentDir = 'down';
         this.directionTimer = 0;
         this.changeDirTime = 2000; // Tiempo cambio direc
-        
-         // Estado interno
+
+        // Estado interno
         this.start = true;
         this.bulletManager = null;
         this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
-        
+
         // PowerUps
         this.isFrozen = false;
         this.isPowerUpCarrier = false;
         this.lastVelocity = { x: 0, y: 0 };
 
         this.createAnimations(textureKey);
-        
-         // Iniciar estado
+
+        // Iniciar estado
         this.health = this.initialHealth;
         this.onHealthChanged();
     }
@@ -46,24 +46,21 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.bulletManager = manager;
     }
 
-   
-
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
-//mirar si esta quieto
+        //mirar si esta quieto
         if (this.isFrozen) {
             this.body.setVelocity(0, 0);
             return;
         }
 
-        
         this.shootTimer -= delta;
         if (this.shootTimer <= 0) {
             this.shoot();
             this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
         }
 
-       
+
         this.updateMovement(delta);
     }
 
@@ -81,25 +78,23 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
             this.directionTimer = Phaser.Math.Between(1000, 4000);
         }
 
-        
         this.applyVelocity();
     }
 
-   //velocidad según direccion
+    //velocidad según direccion
     applyVelocity() {
         const speed = this.moveSpeed;
-        
+
         switch (this.currentDir) {
-            case 'up':    this.body.setVelocity(0, -speed); break;
-            case 'down':  this.body.setVelocity(0, speed);  break;
-            case 'left':  this.body.setVelocity(-speed, 0); break;
-            case 'right': this.body.setVelocity(speed, 0);  break;
+            case 'up': this.body.setVelocity(0, -speed); break;
+            case 'down': this.body.setVelocity(0, speed); break;
+            case 'left': this.body.setVelocity(-speed, 0); break;
+            case 'right': this.body.setVelocity(speed, 0); break;
         }
-        
+
         this.playAnimation(this.currentDir);
     }
 
-   
     changeDirection(causedByCollision) {
         const directions = ['up', 'down', 'left', 'right'];
         let validDirections = [];
@@ -121,19 +116,19 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         }
 
         this.currentDir = newDir;
-        
+
         // Resetear timer 
         this.directionTimer = Phaser.Math.Between(1000, 3000);
     }
 
-   // Alinea el tanque a la rejilla para facilitar giros perfectos.
-     
+    // Alinea el tanque a la rejilla para facilitar giros perfectos.
+
     alignToGrid() {
-        const blockSize = OBSTACLE.BLOCK_SIZE || 16; 
-        
+        const blockSize = OBSTACLE.BLOCK_SIZE || 16;
+
         if (this.currentDir === 'left' || this.currentDir === 'right') {
-           
-            this.x = Math.round(this.x / blockSize) * blockSize; 
+
+            this.x = Math.round(this.x / blockSize) * blockSize;
         } else {
             // Viceversa
             this.y = Math.round(this.y / blockSize) * blockSize;
@@ -149,7 +144,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     checkWorldBounds() {
         // --- CAMBIO IMPORTANTE: Usar los límites físicos dinámicos en lugar de GAME_SIZE fijo ---
         const worldBounds = this.scene.physics.world.bounds;
-        
+
         const margin = 2;
         const x = this.x;
         const y = this.y;
@@ -160,12 +155,10 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         if (this.currentDir === 'right' && x + hw >= worldBounds.width - margin) return true; // Ahora respeta el borde del HUD
         if (this.currentDir === 'up' && y - hh <= worldBounds.y + margin) return true;
         if (this.currentDir === 'down' && y + hh >= worldBounds.height - margin) return true;
-        
+
         return false;
     }
 
-    
-    
     shoot() {
         if (!this.bulletManager || !this.active) return;
 
@@ -182,8 +175,6 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
 
         this.bulletManager.fire(this.x, this.y, vx, vy);
     }
-    
-
 
     createAnimations(textureKey) {
         if (this.scene.anims.exists(textureKey + '_up')) return;
@@ -204,7 +195,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     playAnimation(direction) {
-        if(this.active) {
+        if (this.active) {
             const animKey = this.texture.key + '_' + direction;
             // Solo reiniciar animación si es diferente 
             if (!this.anims.currentAnim || this.anims.currentAnim.key !== animKey || !this.anims.isPlaying) {
@@ -219,8 +210,8 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.onHealthChanged();
         if (this.health <= 0) this.die();
     }
-    
-    onHealthChanged() {}
+
+    onHealthChanged() { }
 
     die() {
         if (!this.active) return;
@@ -233,28 +224,28 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.scene.events.emit(EVENTS.EXPLOSION_SPAWN, { x: this.x, y: this.y });
     }
 
-      reset(x, y) {
+    reset(x, y) {
         this.enableBody(true, x, y, true, true);
         this.setActive(true);
         this.setVisible(true);
-        
+
         this.health = this.initialHealth;
         this.start = true;
         this.isFrozen = false;
-        this.lastVelocity = { x: 0, y: 0 }; 
+        this.lastVelocity = { x: 0, y: 0 };
         this.clearTint();
         this.onHealthChanged();
-        
+
         this.shootTimer = Phaser.Math.Between(ENEMY.FIRE_RATE_MIN, ENEMY.FIRE_RATE_MAX);
     }
-  
+
     freeze() {
         if (!this.active) return;
-        
+
         // 1. Guardamos la velocidad actual ANTES de detenerlo
-        this.lastVelocity = { 
-            x: this.body.velocity.x, 
-            y: this.body.velocity.y 
+        this.lastVelocity = {
+            x: this.body.velocity.x,
+            y: this.body.velocity.y
         };
 
         this.isFrozen = true;
@@ -265,7 +256,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     unfreeze() {
         if (!this.active) return;
         this.isFrozen = false;
-        this.applyVelocity(); 
+        this.applyVelocity();
     }
 }
 

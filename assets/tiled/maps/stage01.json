@@ -10297,6 +10297,29 @@
         }, 
         {
          "draworder":"topdown",
+         "id":9,
+         "name":"player_spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":3154,
+                 "name":"Player spawn",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":156,
+                 "y":232
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":8,
          "name":"spawners",
          "objects":[
@@ -10366,8 +10389,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":9,
- "nextobjectid":3154,
+ "nextlayerid":10,
+ "nextobjectid":3155,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

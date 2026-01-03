@@ -103,12 +103,24 @@ class BulletManager {
         enemy.takeDamage(1);
     }
 
-   onBulletHitPlayer(bullet, player) {
+    onBulletHitPlayer(obj1, obj2) {
+        // Phaser might pass parameters in either order, detect which is which
+        let bullet, player;
+        if (obj1.texture && obj1.texture.key === 'bullet') {
+            bullet = obj1;
+            player = obj2;
+        } else {
+            bullet = obj2;
+            player = obj1;
+        }
+
+        // Only process if player is active and visible
+        if (!player.active || !player.visible) return;
+        
         this.#deactivateBullet(bullet);
         
-        
         if (player.takeDamage) {
-            player.takeDamage(1);
+            player.takeDamage();
         }
     }
 }

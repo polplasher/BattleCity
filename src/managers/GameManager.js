@@ -1,5 +1,5 @@
 import { EVENTS } from '../core/events.js';
-import { POWERUP } from '../core/constants.js';
+import { POWERUP, GAME_SIZE } from '../core/constants.js';
 import { highScoreManager } from './HighScoreManager.js';
 
 class GameManager {
@@ -42,11 +42,59 @@ class GameManager {
         if (this.isGameOver) return;
 
         this.lives--;
+        console.log(`Lives left: ${this.lives}`);
         this.scene.events.emit(EVENTS.LIVES_CHANGED, { lives: this.lives });
 
         if (this.lives <= 0) {
+            // Game Over - show animation then score screen
             this.triggerDefeat('no-lives');
+        } else {
+            // Player has lives left - respawn after 2 seconds
+            this.respawnPlayer();
         }
+    }
+
+    respawnPlayer() {
+        // Hide player temporarily and disable physics
+        if (this.scene.player) {
+            this.scene.player.setVisible(false);
+            this.scene.player.setActive(false);
+            this.scene.player.setVelocity(0, 0);
+
+            if (this.scene.player.body) {
+                this.scene.player.body.enable = false;
+            }
+        }
+
+        // Respawn after 2 seconds
+        this.scene.time.delayedCall(2000, () => {
+            if (this.scene.player && !this.isGameOver) {
+                // Use spawn point from map, or default to bottom-center
+                const spawnX = this.scene.playerSpawnX || this.scene.scale.width / 2;
+                const spawnY = this.scene.playerSpawnY || this.scene.scale.height - 24;
+
+                // Re-enable physics body first
+                if (this.scene.player.body) {
+                    this.scene.player.body.enable = true;
+                    this.scene.player.body.reset(spawnX, spawnY);
+                    this.scene.player.setVelocity(0, 0);
+                }
+
+                // Set sprite position and make visible
+                this.scene.player.setPosition(spawnX, spawnY);
+                this.scene.player.setActive(true);
+                this.scene.player.setVisible(true);
+
+                // Reset facing direction
+                this.scene.player.facing = 'up';
+                this.scene.player.setFrame(0); // Up facing frame
+
+                // Give temporary invulnerability
+                if (this.scene.player.activateShield) {
+                    this.scene.player.activateShield(3000);
+                }
+            }
+        });
     }
 
     heal() {
@@ -105,14 +153,41 @@ class GameManager {
             isHighScore
         });
 
-        // Cambiar a escena de score 
-        this.scene.time.delayedCall(2000, () => {
-            this.scene.scene.start('ScoreMenuScene', {
-                score: this.score,
-                stage: this.stage,
-                reason,
-                isHighScore
-            });
+        // Hide player
+        if (this.scene.player) {
+            this.scene.player.setVisible(false);
+        }
+
+        // Show game over animation
+        this.showGameOverAnimation(reason, isHighScore);
+    }
+
+    showGameOverAnimation(reason, isHighScore) {
+        const centerX = GAME_SIZE.WIDTH / 2;
+        const centerY = GAME_SIZE.HEIGHT / 2;
+
+        // Create game over text starting below screen
+        const gameOverText = this.scene.add.image(centerX, GAME_SIZE.HEIGHT + 50, 'gameOverText');
+        gameOverText.setDepth(1000);
+
+        // Tween from bottom to center
+        this.scene.tweens.add({
+            targets: gameOverText,
+            y: centerY,
+            duration: 1000,
+            ease: 'Power2',
+            onComplete: () => {
+                // Wait then go to score screen
+                this.scene.time.delayedCall(2000, () => {
+                    this.scene.registry.set('scoreSumary', this.scene.spawnManager.scoresList || []);
+                    this.scene.scene.start('ScoreMenuScene', {
+                        score: this.score,
+                        stage: this.stage,
+                        reason: reason,
+                        isHighScore: isHighScore
+                    });
+                });
+            }
         });
     }
 

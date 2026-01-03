@@ -16,6 +16,10 @@ class Stage01 extends Phaser.Scene {
     // Load Tiled map
     this.load.setPath('assets/tiled/maps');
     this.load.tilemapTiledJSON('stage01', 'stage01.json');
+    
+    // Load game over text
+    this.load.setPath('assets/sprites/menus/text');
+    this.load.image('gameOverText', 'gameOverText.png');
   }
 
   create() {
@@ -40,8 +44,10 @@ class Stage01 extends Phaser.Scene {
     this.bulletPool = this.bulletManager.getPool();
     this.enemyBulletPool = this.enemyBulletManager.getPool();
 
-    // Player
-    this.player = new Player(this, this.scale.width / 2, this.scale.height / 2, 'tank');
+    // Player - use spawn point from map or default
+    const spawnX = this.playerSpawnX || this.scale.width / 2;
+    const spawnY = this.playerSpawnY || this.scale.height - 24;
+    this.player = new Player(this, spawnX, spawnY, 'tank');
     this.player.scene.bulletManager = this.bulletManager;
 
     // Start spawning enemies
@@ -53,6 +59,9 @@ class Stage01 extends Phaser.Scene {
   loadMapFromTiled() {
     // Create tilemap
     this.map = this.make.tilemap({ key: 'stage01' });
+
+    // Load player spawn point first
+    this.loadPlayerSpawnPoint();
 
     // Load obstacles from object layer
     const obstaclesLayer = this.map.getObjectLayer('obstacles');
@@ -114,6 +123,25 @@ class Stage01 extends Phaser.Scene {
     this.powerUpManager.startSpawning();
   }
 
+  loadPlayerSpawnPoint() {
+    const spawnLayer = this.map.getObjectLayer('player_spawn');
+
+    if (!spawnLayer || spawnLayer.objects.length === 0) {
+      console.warn('No player_spawn layer found, using default position');
+      // Default spawn position
+      this.playerSpawnX = this.scale.width / 2;
+      this.playerSpawnY = this.scale.height - 24;
+      return;
+    }
+
+    // Get first spawn point
+    const spawnObj = spawnLayer.objects[0];
+    this.playerSpawnX = spawnObj.x + (spawnObj.width / 2);
+    this.playerSpawnY = spawnObj.y + (spawnObj.height / 2);
+    
+    console.log(`Player spawn point: (${this.playerSpawnX}, ${this.playerSpawnY})`);
+  }
+
   createManagers() {
     this.gameManager = new GameManager(this);
     this.bulletManager = new BulletManager(this);
@@ -157,7 +185,10 @@ class Stage01 extends Phaser.Scene {
     );
     this.physics.add.overlap(this.enemyBulletPool, this.player,
       this.enemyBulletManager.onBulletHitPlayer,
-      null,
+      (bullet, player) => {
+        // Only process collision if player is active and physics body is enabled
+        return player.active && player.body && player.body.enable;
+      },
       this.enemyBulletManager
     );
   }

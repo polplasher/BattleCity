@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="96" height="65" tilewidth="4" tileheight="4" infinite="0" nextlayerid="9" nextobjectid="3154">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="96" height="65" tilewidth="4" tileheight="4" infinite="0" nextlayerid="10" nextobjectid="3155">
  <editorsettings>
   <export target="stage01.json" format="json"/>
  </editorsettings>
@@ -864,6 +864,11 @@
   <object id="3143" type="BrickWall" gid="1" x="280" y="144" width="4" height="4"/>
   <object id="3144" type="BrickWall" gid="1" x="284" y="144" width="4" height="4"/>
   <object id="3153" name="AllyBase" type="AllyBase" x="184" y="236">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="9" name="player_spawn">
+  <object id="3154" name="Player spawn" x="156" y="232">
    <point/>
   </object>
  </objectgroup>
