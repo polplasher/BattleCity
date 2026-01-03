@@ -123,6 +123,14 @@ class BulletManager {
             player.takeDamage();
         }
     }
+
+    destroy() {
+        // Check if pool still exists before clearing
+        if (this.pool && this.pool.children) {
+            this.pool.clear(true, true);
+        }
+        this.pool = null;
+    }
 }
 
 export { BulletManager };

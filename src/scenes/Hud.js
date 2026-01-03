@@ -7,7 +7,6 @@ class Hud extends Phaser.Scene {
     }
 
     create() {
-        
         this.HUD_WIDTH = 50; 
         this.START_X = GAME_SIZE.WIDTH - this.HUD_WIDTH; 
         this.CENTER_X = this.START_X + (this.HUD_WIDTH / 2);

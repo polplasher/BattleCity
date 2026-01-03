@@ -37,7 +37,13 @@ class EnemyManager {
     
     getActiveCount() { return this.enemies.countActive(true); }
 
-    destroy() { this.enemies.clear(true, true); }
+    destroy() {
+        // Check if group still exists before clearing
+        if (this.enemies && this.enemies.children) {
+            this.enemies.clear(true, true);
+        }
+        this.enemies = null;
+    }
 }
 
 export { EnemyManager };

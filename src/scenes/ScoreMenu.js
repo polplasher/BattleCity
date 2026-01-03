@@ -1,5 +1,5 @@
 import { highScoreManager } from '../managers/HighScoreManager.js';
-import { SpawnManager } from '../managers/SpawnManager.js';
+import { TOTAL_STAGES } from '../core/levels.js';
 
 class ScoreMenu extends Phaser.Scene {
     constructor() {
@@ -11,12 +11,19 @@ class ScoreMenu extends Phaser.Scene {
         // Recibir datos de la escena anterior
         this.playerScore = data.score || 0;
         this.stage = data.stage || 1;
+        this.lives = data.lives || 0;
         this.reason = data.reason || '';
         this.isHighScore = data.isHighScore || false;
+        this.isVictory = data.isVictory || false;
+        this.isLastStage = data.isLastStage || false;
+        
         this.basicDefeated = 0;
         this.fastDefeated = 0;
         this.powerDefeated = 0;
         this.heavyDefeated = 0;
+        
+        // Determine if player can continue to next stage
+        this.canContinue = this.isVictory && !this.isLastStage && this.lives > 0;
     }
 
     create() {
@@ -132,22 +139,75 @@ class ScoreMenu extends Phaser.Scene {
         }
 
         // Motivo de game over
-        if (this.reason) {
-            const reasonText = this.reason === 'base-destroyed' ? 'BASE DESTROYED' : 'NO LIVES LEFT';
+        if (this.reason && !this.isVictory) {
+            let reasonText = '';
+            switch(this.reason) {
+                case 'base-destroyed':
+                    reasonText = 'BASE DESTROYED';
+                    break;
+                case 'no-lives':
+                    reasonText = 'NO LIVES LEFT';
+                    break;
+                default:
+                    reasonText = 'GAME OVER';
+            }
             this.add.text(centerX, 55, reasonText, {
                 fontSize: '10px',
                 fill: '#f44'
             }).setOrigin(0.5);
         }
 
-        // Instrucción para continuar
-        this.add.text(centerX, 240, 'PRESS ENTER TO CONTINUE', {
-            fontSize: '8px',
-            fill: '#888'
-        }).setOrigin(0.5);
+        // Victory message
+        if (this.isVictory) {
+            if (this.isLastStage) {
+                this.add.text(centerX, 55, '★ CONGRATULATIONS! ★', {
+                    fontSize: '10px',
+                    fill: '#0f0'
+                }).setOrigin(0.5);
+            } else {
+                this.add.text(centerX, 55, 'STAGE CLEAR!', {
+                    fontSize: '10px',
+                    fill: '#0f0'
+                }).setOrigin(0.5);
+            }
+        }
 
-        // Input para volver al menú
+        // Instrucción para continuar
+        if (this.canContinue) {
+            this.add.text(centerX, 232, `PRESS ENTER FOR STAGE ${this.stage + 1}`, {
+                fontSize: '8px',
+                fill: '#0f0'
+            }).setOrigin(0.5);
+            
+            this.add.text(centerX, 245, 'PRESS ESC FOR MENU', {
+                fontSize: '8px',
+                fill: '#888'
+            }).setOrigin(0.5);
+        } else {
+            this.add.text(centerX, 240, 'PRESS ENTER TO CONTINUE', {
+                fontSize: '8px',
+                fill: '#888'
+            }).setOrigin(0.5);
+        }
+
+        // Input handling
         this.input.keyboard.once('keydown-ENTER', () => {
+            if (this.canContinue) {
+                // Go to stage intro scene which handles the animation
+                // Reset lives to 3 for the new stage
+                this.scene.start('StageIntroScene', {
+                    stage: this.stage + 1,
+                    score: this.playerScore,
+                    lives: 3
+                });
+            } else {
+                // Game over or completed all stages - go to menu
+                this.scene.start('MenuScene');
+            }
+        });
+        
+        // ESC to go back to menu (even if can continue)
+        this.input.keyboard.once('keydown-ESC', () => {
             this.scene.start('MenuScene');
         });
     }

@@ -6,7 +6,7 @@
  <tileset firstgid="1" source="brick_tile.tsx"/>
  <tileset firstgid="17" source="steel_tile.tsx"/>
  <imagelayer id="6" name="reference" opacity="0.2" offsetx="80" offsety="32">
-  <image source="references/stage_ref.png" width="208" height="208"/>
+  <image source="references/stage01_ref.png" width="208" height="208"/>
  </imagelayer>
  <objectgroup id="7" name="obstacles">
   <object id="508" type="SteelWall" gid="17" x="80" y="152" width="8" height="8"/>

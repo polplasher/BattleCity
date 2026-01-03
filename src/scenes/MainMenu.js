@@ -2,20 +2,20 @@ import { GAME_SIZE } from "../core/constants.js";
 
 class MainMenu extends Phaser.Scene {
     constructor() {
-         super({ key: "MenuScene" }); 
-        }
+        super({ key: "MenuScene" });
+    }
 
     create() {
         this.keys = this.input.keyboard.addKeys('W,A,S,D,ENTER');
         this.cameras.main.setBackgroundColor('#111');
-        
+
         this.title = this.add.image(this.scale.width / 2, 300, 'title').setOrigin(0.5);
         this.startText = this.add.image(this.scale.width / 2, 380, '1PlayerText').setOrigin(0.5);
         this.twoPlayerText = this.add.image(this.scale.width / 2 + 5, 410, '2PlayersText').setOrigin(0.5);
         this.constructionText = this.add.image(this.scale.width / 2 + 15, 440, 'constructionText').setOrigin(0.5);
 
-        this.HIText = this.add.image(this.scale.width/2 - 10, 10, 'highScoreText').setOrigin(1, 0);
-        this.HIScoreNumbers = this.add.sprite(this.scale.width/2, 10, 'numberSpritesheet', 0).setFrame(1).setOrigin(1, 0);
+        this.HIText = this.add.image(this.scale.width / 2 - 10, 10, 'highScoreText').setOrigin(1, 0);
+        this.HIScoreNumbers = this.add.sprite(this.scale.width / 2, 10, 'numberSpritesheet', 0).setFrame(1).setOrigin(1, 0);
         this.HIScore0s = this.add.sprite(this.HIScoreNumbers.x + 17, 10, '00Text', 0).setOrigin(1, 0);
 
         this.startLevelScreenUp = this.add.image(0, 0, 'startLevelScreen').setOrigin(0, 1).setScale(25);
@@ -27,7 +27,6 @@ class MainMenu extends Phaser.Scene {
 
         this.createAnimations();
 
-        
         this.tweens.add({
             targets: [this.startText, this.tank],
             duration: 3000,
@@ -58,6 +57,7 @@ class MainMenu extends Phaser.Scene {
             repeat: 0
         });
     }
+
     createAnimations() {
         this.anims.create({
             key: "tank_anim",
@@ -75,45 +75,12 @@ class MainMenu extends Phaser.Scene {
     }
 
     startGame() {
-        this.startText.destroy();
-        this.title.destroy();
-        this.twoPlayerText.destroy();
-        this.tank.destroy();
-        this.constructionText.destroy();
-        this.HIScore0s.destroy();
-        this.HIScoreNumbers.destroy();
-        this.HIText.destroy();
-    
-        this.tweens.add({
-            targets: this.startLevelScreenUp,
-            duration: 700,
-            y: this.scale.height / 2,
-            onComplete: () => this.showLevelText()
+        // Go to stage intro scene which handles the animation
+        this.scene.start('StageIntroScene', {
+            stage: 1,
+            score: 0,
+            lives: 3
         });
-        this.tweens.add({
-            targets: this.startLevelScreenDown,
-            duration: 700,
-            y: this.scale.height / 2
-        });
-    }
-
-    showLevelText() {
-        this.tweens.add({
-            targets: this.levelText,
-            duration: 100,
-            alpha: 1
-        });
-        this.tweens.add({
-            targets: this.startLevelScreenUp,
-            duration: 2000,
-            alpha: 1,
-            onComplete: () => this.changeScene()
-        });
-    }
-
-    changeScene() {
-        this.sound.play('start_jingle');
-        this.scene.start('Stage01');
     }
 
     update() {
@@ -123,7 +90,7 @@ class MainMenu extends Phaser.Scene {
         }
         if (Phaser.Input.Keyboard.JustDown(this.keys.W)) {
             this.cursorPos = (this.tank.y / 30 - 5) - 1;
-        } 
+        }
         if (Phaser.Input.Keyboard.JustDown(this.keys.S)) {
             this.cursorPos = (this.tank.y / 30 - 5) + 1;
         }
@@ -139,7 +106,6 @@ class MainMenu extends Phaser.Scene {
                 this.tank.y = 210;
                 break;
             default:
-                //;
                 break;
         }
     }

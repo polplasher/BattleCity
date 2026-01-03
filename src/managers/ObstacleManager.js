@@ -70,8 +70,12 @@ class ObstacleManager {
 
     getGroup() { return this.obstacles; }
     getAllyBase() { return this.allyBase; }
-    destroy() { 
-        this.obstacles.clear(true, true);
+    destroy() {
+        // Check if group still exists before clearing
+        if (this.obstacles && this.obstacles.children) {
+            this.obstacles.clear(true, true);
+        }
+        this.obstacles = null;
         this.allyBase = null;
     }
 }

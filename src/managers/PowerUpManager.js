@@ -127,7 +127,11 @@ class PowerUpManager {
      */
     destroy() {
         this.stopSpawning();
-        this.group.clear(true, true);
+        // Check if group still exists before clearing
+        if (this.group && this.group.children) {
+            this.group.clear(true, true);
+        }
+        this.group = null;
         this.spawnerPositions = [];
     }
 }

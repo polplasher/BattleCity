@@ -179,12 +179,18 @@ class GameManager {
             onComplete: () => {
                 // Wait then go to score screen
                 this.scene.time.delayedCall(2000, () => {
+                    // Stop HUD scene
+                    this.scene.scene.stop('HudScene');
+                    
                     this.scene.registry.set('scoreSumary', this.scene.spawnManager.scoresList || []);
                     this.scene.scene.start('ScoreMenuScene', {
                         score: this.score,
                         stage: this.stage,
+                        lives: 0,
                         reason: reason,
-                        isHighScore: isHighScore
+                        isHighScore: isHighScore,
+                        isVictory: false,
+                        isLastStage: true // Game over means no continuation
                     });
                 });
             }
@@ -225,6 +231,14 @@ class GameManager {
         this.isGameOver = false;
         this.isVictory = false;
         this.baseDestroyed = false;
+    }
+
+    destroy() {
+        // Remove all event listeners to prevent stale references
+        this.scene.events.off(EVENTS.BASE_DESTROYED, this.onBaseDestroyed, this);
+        this.scene.events.off(EVENTS.ENEMY_DIED, this.onEnemyDied, this);
+        this.scene.events.off(EVENTS.PLAYER_DAMAGED, this.takeDamage, this);
+        this.scene.events.off(EVENTS.POWERUP_COLLECTED, this.onPowerUpCollected, this);
     }
 
     getLives() { return this.lives; }

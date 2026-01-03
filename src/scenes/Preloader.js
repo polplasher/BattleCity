@@ -8,6 +8,7 @@ import { TankBasic } from '../entities/enemies/TankBasic.js';
 import { TankFast } from '../entities/enemies/TankFast.js';
 import { TankPower } from '../entities/enemies/TankPower.js';
 import { TankArmor } from '../entities/enemies/TankArmor.js';
+import { STAGES } from '../core/levels.js';
 
 /**
  * Escena de precarga global.
@@ -31,12 +32,18 @@ class Preloader extends Phaser.Scene {
         this.load.image('2PlayersText', 'menus/text/2PlayerText.png');
         this.load.image('00Text', 'menus/text/double0Text.png');
         this.load.spritesheet('numberSpritesheet', 'menus/text/numbersWhite.png', { frameWidth: 8, frameHeight: 8 });
-       
         
+        // Game over text
+        this.load.setPath('assets/sprites/menus/text');
+        this.load.image('gameOverText', 'gameOverText.png');
        
+        this.load.setPath('assets/sprites');
         this.load.image('enemy_icon', 'menus/enemyIcon.png');
         this.load.image('player_icon', 'menus/player1Icon.png'); 
         this.load.image('flag_icon', 'menus/flagIcon.png');
+
+        // Load all stage maps from Tiled
+        this.loadStageMaps();
 
         // Audio
         this.load.setPath('assets/audio');
@@ -71,6 +78,22 @@ class Preloader extends Phaser.Scene {
         this.load.image('powerup_shovel', 'powerUp5.png');
         this.load.image('powerup_timer', 'powerUp6.png');
         this.load.image('powerup_helmet', 'powerUp7.png');    
+    }
+
+    /**
+     * Load all stage maps defined in STAGES configuration
+     */
+    loadStageMaps() {
+        this.load.setPath('assets/tiled/maps');
+        
+        // Iterate through all stages and load their maps
+        Object.values(STAGES).forEach(stageConfig => {
+            const mapKey = stageConfig.mapKey;
+            const jsonFile = `${mapKey}.json`;
+            
+            console.log(`Preloader: Loading map '${mapKey}' from '${jsonFile}'`);
+            this.load.tilemapTiledJSON(mapKey, jsonFile);
+        });
     }
 
     createLoadingBar() {
