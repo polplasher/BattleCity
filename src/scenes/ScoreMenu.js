@@ -1,5 +1,6 @@
 import { highScoreManager } from '../managers/HighScoreManager.js';
 import { TOTAL_STAGES } from '../core/levels.js';
+import { PLAYER } from '../core/constants.js';
 
 class ScoreMenu extends Phaser.Scene {
     constructor() {
@@ -194,11 +195,11 @@ class ScoreMenu extends Phaser.Scene {
         this.input.keyboard.once('keydown-ENTER', () => {
             if (this.canContinue) {
                 // Go to stage intro scene which handles the animation
-                // Reset lives to 3 for the new stage
+                // Reset lives for the new stage
                 this.scene.start('StageIntroScene', {
                     stage: this.stage + 1,
                     score: this.playerScore,
-                    lives: 3
+                    lives: PLAYER.INITIAL_LIVES
                 });
             } else {
                 // Game over or completed all stages - go to menu

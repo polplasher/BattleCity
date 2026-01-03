@@ -34,7 +34,7 @@ class BasePowerUp extends Phaser.Physics.Arcade.Sprite {
             duration: 200,
             yoyo: true,
             repeat: -1,
-            delay: POWERUP.DURATION - 3000
+            delay: POWERUP.DURATION - POWERUP.BLINK_WARNING_TIME
         });
     }
 

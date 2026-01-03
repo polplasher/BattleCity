@@ -1,5 +1,5 @@
 import { EVENTS } from '../core/events.js';
-import { GAME_SIZE } from '../core/constants.js';
+import { GAME_SIZE, HUD } from '../core/constants.js';
 
 class Hud extends Phaser.Scene {
     constructor() {
@@ -7,14 +7,13 @@ class Hud extends Phaser.Scene {
     }
 
     create() {
-        this.HUD_WIDTH = 50; 
-        this.START_X = GAME_SIZE.WIDTH - this.HUD_WIDTH; 
+        this.START_X = GAME_SIZE.WIDTH - HUD.WIDTH; 
         this.CENTER_X = this.START_X + (this.HUD_WIDTH / 2);
         
         // 1. Fondo Gris
         const graphics = this.add.graphics();
         graphics.fillStyle(0x666666, 1); 
-        graphics.fillRect(this.START_X, 0, this.HUD_WIDTH, GAME_SIZE.HEIGHT);
+        graphics.fillRect(this.START_X, 0, HUD.WIDTH, GAME_SIZE.HEIGHT);
 
         // 2. Contenedor de iconos de enemigos
         this.enemyIcons = [];

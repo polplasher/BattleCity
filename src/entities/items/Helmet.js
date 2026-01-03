@@ -1,5 +1,5 @@
 import { BasePowerUp } from './BasePowerUp.js';
-import { POWERUP } from '../../core/constants.js';
+import { POWERUP, PLAYER } from '../../core/constants.js';
 
 class Helmet extends BasePowerUp {
     constructor(scene, x, y) {
@@ -10,8 +10,7 @@ class Helmet extends BasePowerUp {
    
     applyEffect(player) {
         if (player.activateShield) {
-            player.activateShield(10000); 
-            
+            player.activateShield(PLAYER.SHIELD_DURATION);
         }
     }
 }

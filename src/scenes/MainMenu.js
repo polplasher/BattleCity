@@ -1,4 +1,4 @@
-import { GAME_SIZE } from "../core/constants.js";
+import { GAME_SIZE, PLAYER } from '../core/constants.js';
 
 class MainMenu extends Phaser.Scene {
     constructor() {

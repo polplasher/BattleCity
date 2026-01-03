@@ -1,5 +1,5 @@
 import { EVENTS } from '../core/events.js';
-import { POWERUP } from '../core/constants.js';
+import { POWERUP, SCORE_POPUP } from '../core/constants.js';
 
 class ScorePopupManager {
     constructor(scene) {
@@ -26,7 +26,7 @@ class ScorePopupManager {
         const popup = this.#getPopup();
         
         popup.setText(points.toString());
-        popup.setPosition(x, y - 10);
+        popup.setPosition(x, y + SCORE_POPUP.OFFSET_Y);
         popup.setAlpha(1);
         popup.setActive(true);
         popup.setVisible(true);
@@ -34,9 +34,9 @@ class ScorePopupManager {
         // Animación: sube y desaparece
         this.scene.tweens.add({
             targets: popup,
-            y: y - 30,
+            y: y + SCORE_POPUP.OFFSET_Y - SCORE_POPUP.RISE_DISTANCE,
             alpha: 0,
-            duration: 800,
+            duration: SCORE_POPUP.DURATION,
             ease: 'Power2',
             onComplete: () => {
                 popup.setActive(false);

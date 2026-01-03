@@ -22,8 +22,8 @@ class Timer extends BasePowerUp {
             }
         });
 
-       //congelar 10 sec(no pone cuanto en la wiki)
-        this.scene.time.delayedCall(10000, () => {
+        // Unfreeze after duration
+        this.scene.time.delayedCall(POWERUP.FREEZE_DURATION, () => {
             affectedEnemies.forEach(enemy => {
                 
                 if (enemy && enemy.active) {

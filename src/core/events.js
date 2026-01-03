@@ -6,18 +6,6 @@
 export const EVENTS = 
 {
     /**
-     * Se emite cuando el jugador dispara una bala.
-     * payload: { x: number, y: number, vx: number, vy: number }
-     */
-    PLAYER_SHOOT: 'player:shoot',
-
-    /**
-     * Se emite cuando un enemigo dispara una bala.
-     * payload: { x: number, y: number, vx: number, vy: number }
-     */
-    ENEMY_SHOOT: 'enemy:shoot',
-
-    /**
      * Se emite cuando un enemigo muere.
      * payload: { x: number, y: number, points: number }
      */

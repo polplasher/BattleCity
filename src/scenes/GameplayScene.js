@@ -7,7 +7,7 @@ import { GameManager } from '../managers/GameManager.js';
 import { SpawnManager } from '../managers/SpawnManager.js';
 import { PowerUpManager } from '../managers/PowerUpManager.js';
 import { ScorePopupManager } from '../managers/ScorePopupManager.js';
-import { GAME_SIZE } from '../core/constants.js';
+import { GAME_SIZE, HUD, PLAYER } from '../core/constants.js';
 import { STAGES, TOTAL_STAGES } from '../core/levels.js';
 
 /**
@@ -31,7 +31,7 @@ class GameplayScene extends Phaser.Scene {
         this.accumulatedScore = data.score || 0;
         
         // Get remaining lives from previous stage
-        this.initialLives = data.lives || 3;
+        this.initialLives = data.lives || PLAYER.INITIAL_LIVES;
         
         // Load stage configuration
         this.stageConfig = STAGES[this.currentStage];
@@ -48,8 +48,7 @@ class GameplayScene extends Phaser.Scene {
     create() {
         this.cameras.main.setBackgroundColor('#111');
 
-        const HUD_WIDTH = 50;
-        const PLAYABLE_WIDTH = GAME_SIZE.WIDTH - HUD_WIDTH;
+        const PLAYABLE_WIDTH = GAME_SIZE.WIDTH - HUD.WIDTH;
 
         this.physics.world.setBounds(0, 0, PLAYABLE_WIDTH, GAME_SIZE.HEIGHT);
 

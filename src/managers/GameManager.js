@@ -1,12 +1,12 @@
 import { EVENTS } from '../core/events.js';
-import { POWERUP, GAME_SIZE } from '../core/constants.js';
+import { POWERUP, GAME_SIZE, PLAYER } from '../core/constants.js';
 import { highScoreManager } from './HighScoreManager.js';
 
 class GameManager {
     constructor(scene) {
         this.scene = scene;
         this.score = 0;
-        this.lives = 3;
+        this.lives = PLAYER.INITIAL_LIVES;
         this.stage = 1;
         this.isGameOver = false;
         this.isVictory = false;
@@ -226,7 +226,7 @@ class GameManager {
 
     reset() {
         this.score = 0;
-        this.lives = 3;
+        this.lives = PLAYER.INITIAL_LIVES;
         this.stage = 1;
         this.isGameOver = false;
         this.isVictory = false;

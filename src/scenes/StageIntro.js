@@ -1,4 +1,4 @@
-import { GAME_SIZE } from '../core/constants.js';
+import { GAME_SIZE, STAGE_INTRO, PLAYER } from '../core/constants.js';
 
 /**
  * Stage introduction scene - shows the grey screen animation with "STAGE X" text.
@@ -16,7 +16,7 @@ class StageIntro extends Phaser.Scene {
     init(data) {
         this.stageNumber = data.stage || 1;
         this.playerScore = data.score || 0;
-        this.playerLives = data.lives || 3;
+        this.playerLives = data.lives || PLAYER.INITIAL_LIVES;
     }
 
     create() {
@@ -35,13 +35,13 @@ class StageIntro extends Phaser.Scene {
             .setScale(25);
 
         // Stage text (hidden initially)
-        this.stageText = this.add.image(centerX - 20, centerY, 'stageText')
+        this.stageText = this.add.image(centerX + STAGE_INTRO.TEXT_OFFSET_X, centerY, 'stageText')
             .setOrigin(0.5)
             .setAlpha(0);
 
         // Stage number using the number spritesheet
         // Position numbers after "STAGE" text
-        const numberX = centerX + 30;
+        const numberX = centerX + STAGE_INTRO.NUMBER_OFFSET_X;
         
         // Handle single or double digit stage numbers
         if (this.stageNumber >= 10) {
@@ -55,7 +55,7 @@ class StageIntro extends Phaser.Scene {
                 .setScale(1.5)
                 .setTint(0x111111);
             
-            this.stageNumberOnes = this.add.sprite(numberX + 12, centerY, 'numberSpritesheet', ones)
+            this.stageNumberOnes = this.add.sprite(numberX + STAGE_INTRO.NUMBER_SPACING, centerY, 'numberSpritesheet', ones)
                 .setOrigin(0.5)
                 .setAlpha(0)
                 .setScale(1.5)
@@ -79,7 +79,7 @@ class StageIntro extends Phaser.Scene {
         // Animate screens closing in
         this.tweens.add({
             targets: this.screenUp,
-            duration: 700,
+            duration: STAGE_INTRO.CURTAIN_DURATION,
             y: centerY,
             ease: 'Power2',
             onComplete: () => this.showStageText()
@@ -87,7 +87,7 @@ class StageIntro extends Phaser.Scene {
 
         this.tweens.add({
             targets: this.screenDown,
-            duration: 700,
+            duration: STAGE_INTRO.CURTAIN_DURATION,
             y: centerY,
             ease: 'Power2'
         });
@@ -103,16 +103,16 @@ class StageIntro extends Phaser.Scene {
         // Fade in stage text and number
         this.tweens.add({
             targets: textElements,
-            duration: 100,
+            duration: STAGE_INTRO.TEXT_FADE_DURATION,
             alpha: 1
         });
 
         // Wait, then play jingle and transition
-        this.time.delayedCall(1500, () => {
+        this.time.delayedCall(STAGE_INTRO.TEXT_DISPLAY_TIME, () => {
             this.sound.play('start_jingle');
             
             // Wait for jingle to start, then go to gameplay
-            this.time.delayedCall(500, () => {
+            this.time.delayedCall(STAGE_INTRO.TRANSITION_DELAY, () => {
                 this.scene.start('GameplayScene', {
                     stage: this.stageNumber,
                     score: this.playerScore,

@@ -42,7 +42,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.createAnimations();
     }
 
-    activateShield(duration = 10000) {
+    activateShield(duration = PLAYER.SHIELD_DURATION) {
         if (this.isInvulnerable && this.shieldTimer) {
             this.shieldTimer.remove();
         }
