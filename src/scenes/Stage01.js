@@ -20,11 +20,9 @@ class Stage01 extends Phaser.Scene {
 
   create() {
     this.cameras.main.setBackgroundColor('#111');
-    
    
     const HUD_WIDTH = 50;
     const PLAYABLE_WIDTH = GAME_SIZE.WIDTH - HUD_WIDTH;
-
    
     this.physics.world.setBounds(0, 0, PLAYABLE_WIDTH, GAME_SIZE.HEIGHT);
 
@@ -48,14 +46,6 @@ class Stage01 extends Phaser.Scene {
 
     // Start spawning enemies
     this.spawnManager.startLevel(1);
-
-    // Test powerups (optional)
-    this.time.delayedCall(2000, () => {
-      this.powerUpManager.spawnPowerUp(200, 200, POWERUP.HELMET);
-      this.powerUpManager.spawnPowerUp(250, 250, POWERUP.TANK);
-      this.powerUpManager.spawnPowerUp(150, 150, POWERUP.GRENADE);
-      this.powerUpManager.spawnPowerUp(100, 100, POWERUP.TIMER);
-    });
 
     this.addCollisions();
   }
@@ -94,9 +84,35 @@ class Stage01 extends Phaser.Scene {
           console.warn(`Unknown obstacle type: ${obj.type}`);
       }
     });
+
+    // Load powerup spawners from object layer
+    this.loadPowerUpSpawners();
   }
 
+  loadPowerUpSpawners() {
+    const spawnersLayer = this.map.getObjectLayer('spawners');
 
+    if (!spawnersLayer) {
+      console.warn('No spawners layer found in Tiled map');
+      return;
+    }
+
+    const spawnerPositions = [];
+
+    spawnersLayer.objects.forEach(obj => {
+      // Tiled uses top-left origin, adjust to center
+      const x = obj.x + (obj.width / 2);
+      const y = obj.y + (obj.height / 2);
+
+      spawnerPositions.push({ x, y });
+    });
+
+    // Load spawner positions into PowerUpManager
+    this.powerUpManager.loadSpawnerPositions(spawnerPositions);
+    
+    // Start automatic spawning
+    this.powerUpManager.startSpawning();
+  }
 
   createManagers() {
     this.gameManager = new GameManager(this);
@@ -161,6 +177,5 @@ class Stage01 extends Phaser.Scene {
     }
   }
 }
-
 
 export { Stage01 };

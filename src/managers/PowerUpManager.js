@@ -9,6 +9,13 @@ class PowerUpManager {
     constructor(scene) {
         this.scene = scene;
         this.group = scene.physics.add.group();
+        
+        // Spawner system
+        this.spawnerPositions = [];
+        this.spawnTimer = null;
+        this.isActive = false;
+        this.minSpawnInterval = 5000;  // Minimum 5 seconds
+        this.maxSpawnInterval = 15000; // Maximum 15 seconds
     }
 
     spawnPowerUp(x, y, type) {
@@ -53,6 +60,75 @@ class PowerUpManager {
         this.scene.physics.add.overlap(player, this.group, (p, powerup) => {
             powerup.collect(p);
         });
+    }
+
+    /**
+     * Load spawner positions from Tiled map
+     * @param {Array} positions - Array of {x, y} positions
+     */
+    loadSpawnerPositions(positions) {
+        this.spawnerPositions = positions;
+        console.log(`PowerUpManager: Loaded ${positions.length} spawner positions`);
+    }
+
+    /**
+     * Start automatic powerup spawning
+     */
+    startSpawning() {
+        if (this.spawnerPositions.length === 0) {
+            console.warn('PowerUpManager: No spawner positions loaded!');
+            return;
+        }
+
+        this.isActive = true;
+        this.scheduleNextSpawn();
+    }
+
+    /**
+     * Stop automatic powerup spawning
+     */
+    stopSpawning() {
+        this.isActive = false;
+        if (this.spawnTimer) {
+            this.spawnTimer.remove();
+            this.spawnTimer = null;
+        }
+    }
+
+    /**
+     * Schedule the next powerup spawn with a random interval
+     */
+    scheduleNextSpawn() {
+        if (!this.isActive) return;
+
+        const interval = Phaser.Math.Between(this.minSpawnInterval, this.maxSpawnInterval);
+        
+        this.spawnTimer = this.scene.time.delayedCall(interval, () => {
+            this.spawnAtRandomLocation();
+            this.scheduleNextSpawn(); // Schedule the next one
+        });
+    }
+
+    /**
+     * Spawn a random powerup at a random spawner location
+     */
+    spawnAtRandomLocation() {
+        if (this.spawnerPositions.length === 0) return;
+
+        // Get a random spawner position
+        const pos = Phaser.Utils.Array.GetRandom(this.spawnerPositions);
+        
+        // Spawn a random powerup
+        this.spawnRandomPowerUp(pos.x, pos.y);
+    }
+
+    /**
+     * Clean up when scene is destroyed
+     */
+    destroy() {
+        this.stopSpawning();
+        this.group.clear(true, true);
+        this.spawnerPositions = [];
     }
 }
 

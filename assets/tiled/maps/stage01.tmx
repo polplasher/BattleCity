@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="96" height="65" tilewidth="4" tileheight="4" infinite="0" nextlayerid="8" nextobjectid="3146">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="96" height="65" tilewidth="4" tileheight="4" infinite="0" nextlayerid="9" nextobjectid="3154">
  <editorsettings>
   <export target="stage01.json" format="json"/>
  </editorsettings>
@@ -863,5 +863,25 @@
   <object id="3142" type="BrickWall" gid="1" x="276" y="144" width="4" height="4"/>
   <object id="3143" type="BrickWall" gid="1" x="280" y="144" width="4" height="4"/>
   <object id="3144" type="BrickWall" gid="1" x="284" y="144" width="4" height="4"/>
+  <object id="3153" name="AllyBase" type="AllyBase" x="184" y="236">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="8" name="spawners">
+  <object id="3146" name="Spawner" x="120" y="76">
+   <point/>
+  </object>
+  <object id="3149" name="Spawner" x="184" y="128">
+   <point/>
+  </object>
+  <object id="3150" name="Spawner" x="248" y="80">
+   <point/>
+  </object>
+  <object id="3151" name="Spawner" x="120" y="200">
+   <point/>
+  </object>
+  <object id="3152" name="Spawner" x="248" y="200">
+   <point/>
+  </object>
  </objectgroup>
 </map>

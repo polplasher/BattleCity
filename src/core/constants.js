@@ -22,8 +22,6 @@ export const PLAYER =
     MAX_BULLETS: 1
 }
 
-// core/constants.js
-
 export const ENEMY = {
     // Velocidades de Movimiento (pixeles por segundo)
     // Basic: "Slow"
