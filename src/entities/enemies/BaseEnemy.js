@@ -15,6 +15,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.bulletSpeed = bulletSpeed;
 
         // Configuración física
+        this.body.setSize(10, 10);
         this.body.setCollideWorldBounds(true);
         this.body.setAllowGravity(false);
         this.setImmovable(true); // Enemies cannot be pushed by player
@@ -65,9 +66,20 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     updateMovement(delta) {
-        // 1. Verificar colisiones 
+        // Decrease collision cooldown
+        if (this.collisionCooldown > 0) {
+            this.collisionCooldown -= delta;
+        }
+        
+        // 1. Verificar colisiones - only change if cooldown expired
         if (this.body.blocked.none === false || this.checkWorldBounds()) {
-            this.changeDirection(true); // true = forzado por colisión
+            if (this.collisionCooldown <= 0) {
+                this.changeDirection(true); // true = forzado por colisión
+                this.collisionCooldown = 300; // 300ms cooldown between collision-based direction changes
+            } else {
+                // Push away from collision slightly
+                this.pushAwayFromCollision();
+            }
             return;
         }
 
@@ -122,16 +134,34 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     // Alinea el tanque a la rejilla para facilitar giros perfectos.
-
     alignToGrid() {
         const blockSize = OBSTACLE.BLOCK_SIZE || 16;
+        const cellSize = 4; // Small grid alignment
 
         if (this.currentDir === 'left' || this.currentDir === 'right') {
-
-            this.x = Math.round(this.x / blockSize) * blockSize;
+            // Align Y axis when moving horizontally
+            this.y = Math.round(this.y / cellSize) * cellSize;
         } else {
-            // Viceversa
-            this.y = Math.round(this.y / blockSize) * blockSize;
+            // Align X axis when moving vertically
+            this.x = Math.round(this.x / cellSize) * cellSize;
+        }
+    }
+    
+    // Push tank slightly away from collision point
+    pushAwayFromCollision() {
+        const pushDistance = 1;
+        
+        if (this.body.blocked.left) {
+            this.x += pushDistance;
+        }
+        if (this.body.blocked.right) {
+            this.x -= pushDistance;
+        }
+        if (this.body.blocked.up) {
+            this.y += pushDistance;
+        }
+        if (this.body.blocked.down) {
+            this.y -= pushDistance;
         }
     }
 
@@ -233,6 +263,7 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         this.start = true;
         this.isFrozen = false;
         this.lastVelocity = { x: 0, y: 0 };
+        this.collisionCooldown = 0;
         this.clearTint();
         this.onHealthChanged();
 
