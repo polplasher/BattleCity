@@ -182,9 +182,9 @@ class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
         const hh = this.body.height / 2;
 
         if (this.currentDir === 'left' && x - hw <= worldBounds.x + margin) return true;
-        if (this.currentDir === 'right' && x + hw >= worldBounds.width - margin) return true; // Ahora respeta el borde del HUD
+        if (this.currentDir === 'right' && x + hw >= worldBounds.x + worldBounds.width - margin) return true;
         if (this.currentDir === 'up' && y - hh <= worldBounds.y + margin) return true;
-        if (this.currentDir === 'down' && y + hh >= worldBounds.height - margin) return true;
+        if (this.currentDir === 'down' && y + hh >= worldBounds.y + worldBounds.height - margin) return true;
 
         return false;
     }
