@@ -3,7 +3,7 @@ import { BaseObstacle } from './BaseObstacle.js';
 class SteelWall extends BaseObstacle {
     constructor(scene, x, y) {
         super(scene, x, y, 'steel_wall', { isDestructible: false });
-        // move pivot up a bit so the wall appears higher; tweak the 2nd value to adjust
+        // move pivot up a bit so the wall appears higher
         this.setOrigin(0.5, 1);
         if (this.body) this.body.updateFromGameObject();
     }

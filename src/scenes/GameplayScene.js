@@ -123,6 +123,10 @@ class GameplayScene extends Phaser.Scene {
                     this.allyBase = this.obstacleManager.createAllyBase(x, y);
                     break;
 
+                case 'GrassWall':
+                    this.obstacleManager.createGrassWall(x, y);
+                    break;
+
                 default:
                     console.warn(`Unknown obstacle type: ${obj.type}`);
             }

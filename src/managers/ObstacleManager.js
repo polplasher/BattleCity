@@ -1,12 +1,14 @@
 import { BrickWall } from '../environment/obstacles/BrickWall.js';
 import { AllyBase } from '../environment/obstacles/allyBase.js';
 import { SteelWall } from '../environment/obstacles/SteelWall.js';
+import { GrassWall } from '../environment/obstacles/GrassWall.js';
 import { OBSTACLE } from '../core/constants.js';
 
 class ObstacleManager {
     constructor(scene) {
         this.scene = scene;
         this.obstacles = scene.physics.add.staticGroup();
+        this.decorativeObjects = []; // Non-collidable decorative objects like grass
         this.allyBase = null;
     }
 
@@ -62,6 +64,12 @@ class ObstacleManager {
         return brick;
     }
 
+    createGrassWall(x, y) {
+        const grass = new GrassWall(this.scene, x, y);
+        this.decorativeObjects.push(grass);
+        return grass;
+    }
+
     onBulletHitObstacle(bullet, obstacle) {
         if (obstacle && typeof obstacle.onHit === 'function') {
             obstacle.onHit(bullet);
@@ -76,6 +84,11 @@ class ObstacleManager {
             this.obstacles.clear(true, true);
         }
         this.obstacles = null;
+        
+        // Destroy decorative objects
+        this.decorativeObjects.forEach(obj => obj.destroy());
+        this.decorativeObjects = [];
+        
         this.allyBase = null;
     }
 }

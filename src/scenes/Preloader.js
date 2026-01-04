@@ -4,6 +4,7 @@ import { Explosion } from '../entities/effects/Explosion.js';
 import { BrickWall } from '../environment/obstacles/BrickWall.js';
 import { SteelWall } from '../environment/obstacles/SteelWall.js';
 import { AllyBase } from '../environment/obstacles/allyBase.js';
+import { GrassWall } from '../environment/obstacles/GrassWall.js';
 import { TankBasic } from '../entities/enemies/TankBasic.js';
 import { TankFast } from '../entities/enemies/TankFast.js';
 import { TankPower } from '../entities/enemies/TankPower.js';
@@ -60,6 +61,7 @@ class Preloader extends Phaser.Scene {
         BrickWall.preload(this);
         SteelWall.preload(this);
         AllyBase.preload(this);
+        GrassWall.preload(this);
 
         // Enemigos
         TankBasic.preload(this);
