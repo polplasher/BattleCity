@@ -73,16 +73,16 @@ class ScoreMenu extends Phaser.Scene {
         this.add.image(this.scale.width / 2, 140, 'tank_fast');
 
         //Power Tanks count
-        this.add.sprite(this.scale.width / 2 - 68, 160, 'numberSpritesheet', Math.floor((this.powerDefeated*2)/10));
-        this.add.sprite(this.scale.width / 2 - 60, 160, 'numberSpritesheet', (this.powerDefeated*2)%10);
+        this.add.sprite(this.scale.width / 2 - 68, 160, 'numberSpritesheet', Math.floor((this.powerDefeated*3)/10));
+        this.add.sprite(this.scale.width / 2 - 60, 160, 'numberSpritesheet', (this.powerDefeated*3)%10);
         this.add.image(this.scale.width / 2 - 48, 159, '00Text');
         this.add.sprite(this.scale.width / 2 - 28, 160, 'numberSpritesheet', Math.floor(this.powerDefeated/10));
         this.add.sprite(this.scale.width / 2 - 20, 160, 'numberSpritesheet', this.powerDefeated%10);
         this.add.image(this.scale.width / 2, 160, 'tank_power');
 
         //Heavy Tanks count
-        this.add.sprite(this.scale.width / 2 - 68, 180, 'numberSpritesheet', Math.floor((this.heavyDefeated*2)/10));
-        this.add.sprite(this.scale.width / 2 - 60, 180, 'numberSpritesheet', (this.heavyDefeated*2)%10);
+        this.add.sprite(this.scale.width / 2 - 68, 180, 'numberSpritesheet', Math.floor((this.heavyDefeated*4)/10));
+        this.add.sprite(this.scale.width / 2 - 60, 180, 'numberSpritesheet', (this.heavyDefeated*4)%10);
         this.add.image(this.scale.width / 2 - 48, 179, '00Text');
         this.add.sprite(this.scale.width / 2 - 28, 180, 'numberSpritesheet', Math.floor(this.heavyDefeated/10));
         this.add.sprite(this.scale.width / 2 - 20, 180, 'numberSpritesheet', this.heavyDefeated%10);
@@ -90,8 +90,8 @@ class ScoreMenu extends Phaser.Scene {
     
         //Total Tanks count
         this.totalTankNumber = this.basicDefeated + this.fastDefeated + this.powerDefeated + this.heavyDefeated;
-        this.add.sprite(this.scale.width / 2 - 68, 200, 'numberSpritesheet', Math.floor((this.totalTankNumber)/10));
-        this.add.sprite(this.scale.width / 2 - 60, 200, 'numberSpritesheet', (this.totalTankNumber)%10);
+        this.add.sprite(this.scale.width / 2 - 68, 200, 'numberSpritesheet', Math.floor((this.basicDefeated + this.fastDefeated * 2 + this.powerDefeated * 3 + this.heavyDefeated * 4)/10));
+        this.add.sprite(this.scale.width / 2 - 60, 200, 'numberSpritesheet', (this.basicDefeated + this.fastDefeated * 2 + this.powerDefeated * 3 + this.heavyDefeated * 4)%10);
         this.add.image(this.scale.width / 2 - 48, 199, '00Text');
         this.add.sprite(this.scale.width / 2 - 28, 200, 'numberSpritesheet', Math.floor(this.totalTankNumber/10));
         this.add.sprite(this.scale.width / 2 - 20, 200, 'numberSpritesheet', this.totalTankNumber%10);
