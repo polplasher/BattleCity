@@ -83,6 +83,9 @@ class GameplayScene extends Phaser.Scene {
         this.bulletPool = this.bulletManager.getPool();
         this.enemyBulletPool = this.enemyBulletManager.getPool();
 
+        // Load enemy spawner positions from map
+        this.loadEnemySpawners();
+
         // Player - use spawn point from map or default
         const spawnX = this.playerSpawnX || this.scale.width / 2;
         const spawnY = this.playerSpawnY || this.scale.height - 24;
@@ -144,11 +147,35 @@ class GameplayScene extends Phaser.Scene {
         this.loadPowerUpSpawners();
     }
 
-    loadPowerUpSpawners() {
+    loadEnemySpawners() {
         const spawnersLayer = this.map.getObjectLayer('spawners');
 
         if (!spawnersLayer) {
             console.warn('No spawners layer found in Tiled map');
+            return;
+        }
+
+        const spawnerPositions = [];
+
+        spawnersLayer.objects.forEach(obj => {
+            // Tiled uses top-left origin, adjust to center
+            const x = obj.x + (obj.width / 2);
+            const y = obj.y + (obj.height / 2);
+
+            spawnerPositions.push({ x, y });
+        });
+
+        // Load spawner positions into SpawnManager
+        this.spawnManager.loadSpawnerPositions(spawnerPositions);
+
+        console.log(`Loaded ${spawnerPositions.length} enemy spawner positions from Tiled map`);
+    }
+
+    loadPowerUpSpawners() {
+        const spawnersLayer = this.map.getObjectLayer('powerup-spawners');
+
+        if (!spawnersLayer) {
+            console.warn('No powerup-spawners layer found in Tiled map');
             return;
         }
 
