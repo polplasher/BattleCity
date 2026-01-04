@@ -1,4 +1,5 @@
 import { GAME_SIZE, PLAYER } from '../core/constants.js';
+import { highScoreManager } from '../managers/HighScoreManager.js';
 
 class MainMenu extends Phaser.Scene {
     constructor() {
@@ -15,8 +16,9 @@ class MainMenu extends Phaser.Scene {
         this.constructionText = this.add.image(this.scale.width / 2 + 15, 440, 'constructionText').setOrigin(0.5);
 
         this.HIText = this.add.image(this.scale.width / 2 - 10, 10, 'highScoreText').setOrigin(1, 0);
-        this.HIScoreNumbers = this.add.sprite(this.scale.width / 2, 10, 'numberSpritesheet', 0).setFrame(1).setOrigin(1, 0);
-        this.HIScore0s = this.add.sprite(this.HIScoreNumbers.x + 17, 10, '00Text', 0).setOrigin(1, 0);
+        this.HIScoreThousends = this.add.sprite(this.scale.width / 2, 10, 'numberSpritesheet', Math.floor(highScoreManager.getTopScore()/1000)).setOrigin(1, 0);
+        this.HIScoreHundreds = this.add.sprite(this.HIScoreThousends.x + 8, 10, 'numberSpritesheet', Math.floor(highScoreManager.getTopScore()/100)%10).setOrigin(1, 0);
+        this.HIScore0s = this.add.sprite(this.HIScoreHundreds.x + 17, 10, '00Text', 0).setOrigin(1, 0);
 
         this.startLevelScreenUp = this.add.image(0, 0, 'startLevelScreen').setOrigin(0, 1).setScale(25);
         this.startLevelScreenDown = this.add.image(0, this.scale.height, 'startLevelScreen').setOrigin(0).setScale(25);
