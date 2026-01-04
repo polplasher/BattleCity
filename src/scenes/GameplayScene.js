@@ -45,12 +45,19 @@ class GameplayScene extends Phaser.Scene {
         console.log(`Initializing ${this.stageConfig.name} (Stage ${this.currentStage})`);
     }
 
-    create() {
+   create() {
         this.cameras.main.setBackgroundColor('#111');
 
-        const PLAYABLE_WIDTH = GAME_SIZE.WIDTH - HUD.WIDTH;
+       
+        const BORDER_SIZE = 16;
 
-        this.physics.world.setBounds(0, 0, PLAYABLE_WIDTH, GAME_SIZE.HEIGHT);
+      
+        const PHYSICS_WIDTH = GAME_SIZE.WIDTH - HUD.WIDTH - BORDER_SIZE;
+        // Alto: AltoTotal - BordeSuperior - BordeInferior
+        const PHYSICS_HEIGHT = GAME_SIZE.HEIGHT - (BORDER_SIZE * 2);
+
+        this.physics.world.setBounds(BORDER_SIZE, BORDER_SIZE, PHYSICS_WIDTH, PHYSICS_HEIGHT);
+       
 
         this.createManagers();
 
@@ -69,6 +76,7 @@ class GameplayScene extends Phaser.Scene {
         this.keys = this.input.keyboard.addKeys('I');
 
         // Load map from Tiled using stage config
+        // (Sin mover nada, se carga tal cual viene del JSON)
         this.loadMapFromTiled();
 
         // Bullet pools
