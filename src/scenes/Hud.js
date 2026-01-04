@@ -7,111 +7,90 @@ class Hud extends Phaser.Scene {
     }
 
     create() {
-    this.HUD_WIDTH = HUD.WIDTH; 
-    this.START_X = GAME_SIZE.WIDTH - this.HUD_WIDTH; 
-    this.CENTER_X = this.START_X + (this.HUD_WIDTH / 2);
-    
-    // Calculate playable area position (same as GameplayScene)
-    const availableWidth = GAME_SIZE.WIDTH - HUD.WIDTH;
-    const availableHeight = GAME_SIZE.HEIGHT;
-    const playableX = Math.floor((availableWidth - PLAYABLE_AREA.WIDTH) / 2) + PLAYABLE_AREA.OFFSET_X;
-    const playableY = Math.floor((availableHeight - PLAYABLE_AREA.HEIGHT) / 2) + PLAYABLE_AREA.OFFSET_Y;
+        this.HUD_WIDTH = HUD.WIDTH;
+        this.START_X = GAME_SIZE.WIDTH - this.HUD_WIDTH;
+        this.CENTER_X = this.START_X + (this.HUD_WIDTH / 2);
 
-    const graphics = this.add.graphics();
-    graphics.fillStyle(0x666666, 1); 
+        // Calculate playable area position (same as GameplayScene)
+        const availableWidth = GAME_SIZE.WIDTH - HUD.WIDTH;
+        const availableHeight = GAME_SIZE.HEIGHT;
+        const playableX = Math.floor((availableWidth - PLAYABLE_AREA.WIDTH) / 2) + PLAYABLE_AREA.OFFSET_X;
+        const playableY = Math.floor((availableHeight - PLAYABLE_AREA.HEIGHT) / 2) + PLAYABLE_AREA.OFFSET_Y;
 
-    // HUD background (right side)
-    graphics.fillRect(this.START_X, 0, this.HUD_WIDTH, GAME_SIZE.HEIGHT);
+        const graphics = this.add.graphics();
+        graphics.fillStyle(0x666666, 1);
 
-    // Border around the playable area
-    const borderSize = PLAYABLE_AREA.BORDER_SIZE;
-    
-    // Top border
-    graphics.fillRect(0, 0, this.START_X, playableY);
-    
-    // Bottom border  
-    graphics.fillRect(0, playableY + PLAYABLE_AREA.HEIGHT, this.START_X, GAME_SIZE.HEIGHT - playableY - PLAYABLE_AREA.HEIGHT);
-    
-    // Left border
-    graphics.fillRect(0, playableY, playableX, PLAYABLE_AREA.HEIGHT);
-    
-    // Right border (between playable area and HUD)
-    graphics.fillRect(playableX + PLAYABLE_AREA.WIDTH, playableY, this.START_X - playableX - PLAYABLE_AREA.WIDTH, PLAYABLE_AREA.HEIGHT);
-    
+        // HUD background (right side)
+        graphics.fillRect(this.START_X, 0, this.HUD_WIDTH, GAME_SIZE.HEIGHT);
 
-    // 2. Contenedor de iconos de enemigos
-    this.enemyIcons = [];
-    
-    
-    this.createEnemyIconsGrid(20); 
+        // Border around the playable area
+        const borderSize = PLAYABLE_AREA.BORDER_SIZE;
 
-    // 3. Información del Jugador 
-    this.add.text(this.START_X + 10, 150, 'IP', {
-        fontFamily: 'monospace', 
-        fontSize: '14px',
-        color: '#000000',
-        fontStyle: 'bold'
-    });
+        // Top border
+        graphics.fillRect(0, 0, this.START_X, playableY);
 
-    // Icono tanque player
-    this.add.image(this.START_X + 10, 170, 'player_icon').setOrigin(0, 0.5);
-    
-    // Numero de vidas
-    this.livesText = this.add.text(this.START_X + 25, 170, '3', {
-        fontFamily: 'monospace',
-        fontSize: '14px',
-        color: '#000000',
-        fontStyle: 'bold'
-    }).setOrigin(0, 0.5);
+        // Bottom border  
+        graphics.fillRect(0, playableY + PLAYABLE_AREA.HEIGHT, this.START_X, GAME_SIZE.HEIGHT - playableY - PLAYABLE_AREA.HEIGHT);
 
-    // 4. Información del Stage
-    this.add.image(this.START_X + 10, 200, 'flag_icon').setOrigin(0, 0.5);
-    
-    // Numero de stage
-    this.stageText = this.add.text(this.START_X + 25, 200, '1', {
-        fontFamily: 'monospace',
-        fontSize: '14px',
-        color: '#000000',
-        fontStyle: 'bold'
-    }).setOrigin(0, 0.5);
+        // Left border
+        graphics.fillRect(0, playableY, playableX, PLAYABLE_AREA.HEIGHT);
 
-   
-    const gameScene = this.scene.get('GameplayScene');
+        // Right border (between playable area and HUD)
+        graphics.fillRect(playableX + PLAYABLE_AREA.WIDTH, playableY, this.START_X - playableX - PLAYABLE_AREA.WIDTH, PLAYABLE_AREA.HEIGHT);
 
-    if (gameScene) {
-        // Escuchar eventos
-        gameScene.events.on(EVENTS.LIVES_CHANGED, this.updateLives, this);
-        gameScene.events.on(EVENTS.ENEMY_REMAINING_CHANGED, this.updateEnemyIcons, this);
-        
-        // Sincronización Inicial Manual 
-        if (gameScene.spawnManager) {
-            const total = gameScene.spawnManager.totalLevelEnemies;
-            const killed = gameScene.spawnManager.enemiesKilled;
-            const remaining = total - killed;
-            
-            // Forzamos la actualización visual inmediata
-            this.updateEnemyIcons({ count: remaining });
-        }
+        // 2. Contenedor de iconos de enemigos
+        this.enemyIcons = [];
 
-        // Actualizar vidas iniciales
-        if (gameScene.gameManager) {
-            this.updateLives({ lives: gameScene.gameManager.lives });
-        }
-        
-        // Actualizar número de stage
-        if (gameScene.currentStage) {
-            this.stageText.setText(gameScene.currentStage.toString());
+        this.createEnemyIconsGrid(20);
+
+        // Icono tanque player
+        this.add.image(this.CENTER_X - 8, 170, 'player_icon').setOrigin(0.5, 0.5);
+
+        // Numero de vidas (using sprite numbers)
+        this.livesSprite = this.add.sprite(this.CENTER_X + 5, 171, 'numberSpritesheet', 3).setOrigin(0.5, 0.5).setTint("#111");
+
+        // 4. Información del Stage
+        this.add.image(this.CENTER_X - 8, 200, 'flag_icon').setOrigin(0.5, 0.5);
+
+        // Numero de stage (using sprite numbers)
+        this.stageSprite = this.add.sprite(this.CENTER_X + 5, 200, 'numberSpritesheet', 1).setOrigin(0.5, 0.5).setTint("#111");
+
+        const gameScene = this.scene.get('GameplayScene');
+
+        if (gameScene) {
+            // Escuchar eventos
+            gameScene.events.on(EVENTS.LIVES_CHANGED, this.updateLives, this);
+            gameScene.events.on(EVENTS.ENEMY_REMAINING_CHANGED, this.updateEnemyIcons, this);
+
+            // Sincronización Inicial Manual 
+            if (gameScene.spawnManager) {
+                const total = gameScene.spawnManager.totalLevelEnemies;
+                const killed = gameScene.spawnManager.enemiesKilled;
+                const remaining = total - killed;
+
+                // Forzamos la actualización visual inmediata
+                this.updateEnemyIcons({ count: remaining });
+            }
+
+            // Actualizar vidas iniciales
+            if (gameScene.gameManager) {
+                this.updateLives({ lives: gameScene.gameManager.lives });
+            }
+
+            // Actualizar número de stage
+            if (gameScene.currentStage) {
+                this.stageSprite.setFrame(gameScene.currentStage);
+            }
         }
     }
-}
 
     createEnemyIconsGrid(total) {
-       
+
         this.enemyIcons.forEach(icon => icon.destroy());
         this.enemyIcons = [];
 
         const startY = 30;
-        const gapX = 8; 
+        const gapX = 8;
         const gapY = 8;
         const cols = 2;
 
@@ -124,8 +103,8 @@ class Hud extends Phaser.Scene {
             const y = startY + (row * gapY);
 
             const icon = this.add.image(x, y, 'enemy_icon');
-           
-            icon.setVisible(false); 
+
+            icon.setVisible(false);
             this.enemyIcons.push(icon);
         }
     }
@@ -134,7 +113,7 @@ class Hud extends Phaser.Scene {
         const count = data.count;
 
         this.enemyIcons.forEach((icon, index) => {
-            
+
             if (index < count) {
                 icon.setVisible(true);
             } else {
@@ -144,7 +123,7 @@ class Hud extends Phaser.Scene {
     }
 
     updateLives(data) {
-        this.livesText.setText(data.lives.toString());
+        this.livesSprite.setFrame(data.lives);
     }
 }
 

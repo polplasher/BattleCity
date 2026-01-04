@@ -33,6 +33,11 @@ class Preloader extends Phaser.Scene {
         this.load.image('2PlayersText', 'menus/text/2PlayerText.png');
         this.load.image('00Text', 'menus/text/double0Text.png');
         this.load.spritesheet('numberSpritesheet', 'menus/text/numbersWhite.png', { frameWidth: 8, frameHeight: 8 });
+        this.load.image('arrow', 'menus/arrow.png');
+        this.load.image('hiScoreText', 'menus/text/hiScoreText.png');
+        this.load.image('stageTextWhite', 'menus/text/stageTextWhite.png');
+        this.load.image('scorePlayerText', 'menus/text/1PlayerTextRed.png');
+
         
         // Game over text
         this.load.setPath('assets/sprites/menus/text');
