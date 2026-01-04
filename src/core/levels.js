@@ -41,7 +41,8 @@ export const LEVELS = STAGES;
 
 export const SPAWN_CONFIG = {
     MAX_ENEMIES_ON_SCREEN: 4,
-    SPAWN_TIME_DELAY: 3000, 
+    SPAWN_TIME_DELAY: 3000,
+    // Fallback positions if Tiled map doesn't have spawners
     POSITIONS: [
         { x: 32, y: 32 },       
         { x: 167, y: 32 },      

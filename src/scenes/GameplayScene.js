@@ -7,7 +7,7 @@ import { GameManager } from '../managers/GameManager.js';
 import { SpawnManager } from '../managers/SpawnManager.js';
 import { PowerUpManager } from '../managers/PowerUpManager.js';
 import { ScorePopupManager } from '../managers/ScorePopupManager.js';
-import { GAME_SIZE, HUD, PLAYER } from '../core/constants.js';
+import { GAME_SIZE, HUD, PLAYER, PLAYABLE_AREA } from '../core/constants.js';
 import { STAGES, TOTAL_STAGES } from '../core/levels.js';
 
 /**
@@ -45,12 +45,33 @@ class GameplayScene extends Phaser.Scene {
         console.log(`Initializing ${this.stageConfig.name} (Stage ${this.currentStage})`);
     }
 
-    create() {
+   create() {
         this.cameras.main.setBackgroundColor('#111');
 
-        const PLAYABLE_WIDTH = GAME_SIZE.WIDTH - HUD.WIDTH;
+        // Calculate centered playable area position
+        // Available width = total width minus HUD
+        const availableWidth = GAME_SIZE.WIDTH - HUD.WIDTH;
+        const availableHeight = GAME_SIZE.HEIGHT;
+        
+        // Center the playable area within the available space
+        const playableX = Math.floor((availableWidth - PLAYABLE_AREA.WIDTH) / 2) + PLAYABLE_AREA.OFFSET_X;
+        const playableY = Math.floor((availableHeight - PLAYABLE_AREA.HEIGHT) / 2) + PLAYABLE_AREA.OFFSET_Y;
+        
+        // Store for use in map loading and spawning
+        this.playableArea = {
+            x: playableX,
+            y: playableY,
+            width: PLAYABLE_AREA.WIDTH,
+            height: PLAYABLE_AREA.HEIGHT
+        };
 
-        this.physics.world.setBounds(0, 0, PLAYABLE_WIDTH, GAME_SIZE.HEIGHT);
+        this.physics.world.setBounds(
+            playableX, 
+            playableY, 
+            PLAYABLE_AREA.WIDTH, 
+            PLAYABLE_AREA.HEIGHT
+        );
+       
 
         this.createManagers();
 
@@ -69,11 +90,15 @@ class GameplayScene extends Phaser.Scene {
         this.keys = this.input.keyboard.addKeys('I');
 
         // Load map from Tiled using stage config
+        // (Sin mover nada, se carga tal cual viene del JSON)
         this.loadMapFromTiled();
 
         // Bullet pools
         this.bulletPool = this.bulletManager.getPool();
         this.enemyBulletPool = this.enemyBulletManager.getPool();
+
+        // Load enemy spawner positions from map
+        this.loadEnemySpawners();
 
         // Player - use spawn point from map or default
         const spawnX = this.playerSpawnX || this.scale.width / 2;
@@ -107,8 +132,9 @@ class GameplayScene extends Phaser.Scene {
 
         obstaclesLayer.objects.forEach(obj => {
             // Tiled uses top-left origin, adjust if needed
-            const x = obj.x + (obj.width / 2);
-            const y = obj.y + (obj.height / 2);
+            // Add playable area offset to position objects correctly
+            const x = obj.x + (obj.width / 2) + this.playableArea.x;
+            const y = obj.y + (obj.height / 2) + this.playableArea.y;
 
             switch (obj.type) {
                 case 'BrickWall':
@@ -136,7 +162,7 @@ class GameplayScene extends Phaser.Scene {
         this.loadPowerUpSpawners();
     }
 
-    loadPowerUpSpawners() {
+    loadEnemySpawners() {
         const spawnersLayer = this.map.getObjectLayer('spawners');
 
         if (!spawnersLayer) {
@@ -148,8 +174,34 @@ class GameplayScene extends Phaser.Scene {
 
         spawnersLayer.objects.forEach(obj => {
             // Tiled uses top-left origin, adjust to center
-            const x = obj.x + (obj.width / 2);
-            const y = obj.y + (obj.height / 2);
+            // Add playable area offset
+            const x = obj.x + (obj.width / 2) + this.playableArea.x;
+            const y = obj.y + (obj.height / 2) + this.playableArea.y;
+
+            spawnerPositions.push({ x, y });
+        });
+
+        // Load spawner positions into SpawnManager
+        this.spawnManager.loadSpawnerPositions(spawnerPositions);
+
+        console.log(`Loaded ${spawnerPositions.length} enemy spawner positions from Tiled map`);
+    }
+
+    loadPowerUpSpawners() {
+        const spawnersLayer = this.map.getObjectLayer('powerup-spawners');
+
+        if (!spawnersLayer) {
+            console.warn('No powerup-spawners layer found in Tiled map');
+            return;
+        }
+
+        const spawnerPositions = [];
+
+        spawnersLayer.objects.forEach(obj => {
+            // Tiled uses top-left origin, adjust to center
+            // Add playable area offset
+            const x = obj.x + (obj.width / 2) + this.playableArea.x;
+            const y = obj.y + (obj.height / 2) + this.playableArea.y;
 
             spawnerPositions.push({ x, y });
         });
@@ -166,16 +218,16 @@ class GameplayScene extends Phaser.Scene {
 
         if (!spawnLayer || spawnLayer.objects.length === 0) {
             console.warn('No player_spawn layer found, using default position');
-            // Default spawn position
-            this.playerSpawnX = this.scale.width / 2;
-            this.playerSpawnY = this.scale.height - 24;
+            // Default spawn position (center of playable area, near bottom)
+            this.playerSpawnX = this.playableArea.x + this.playableArea.width / 2;
+            this.playerSpawnY = this.playableArea.y + this.playableArea.height - 24;
             return;
         }
 
-        // Get first spawn point
+        // Get first spawn point and add playable area offset
         const spawnObj = spawnLayer.objects[0];
-        this.playerSpawnX = spawnObj.x + (spawnObj.width / 2);
-        this.playerSpawnY = spawnObj.y + (spawnObj.height / 2);
+        this.playerSpawnX = spawnObj.x + (spawnObj.width / 2) + this.playableArea.x;
+        this.playerSpawnY = spawnObj.y + (spawnObj.height / 2) + this.playableArea.y;
 
         console.log(`Player spawn point: (${this.playerSpawnX}, ${this.playerSpawnY})`);
     }

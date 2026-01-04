@@ -1,7 +1,7 @@
 export const GAME_SIZE =
 {
-    WIDTH: 384,
-    HEIGHT: 260
+    WIDTH: 260,
+    HEIGHT: 250
 }
 
 export const PHYSICS =
@@ -76,7 +76,21 @@ export const SCALE =
 
 export const HUD =
 {
-    WIDTH: 50
+    WIDTH: 32
+}
+
+// Playable area configuration - adjust these to fit your level perfectly
+export const PLAYABLE_AREA = {
+    // Size of the actual gameplay area (where tanks move)
+    WIDTH: 208,   // 13 tiles * 16px = 208 (original Battle City size)
+    HEIGHT: 208,  // 13 tiles * 16px = 208
+    
+    // Border/margin around the playable area
+    BORDER_SIZE: 8,
+    
+    // Manual offset adjustments for fine-tuning centering
+    OFFSET_X: 0,  // Positive = move right, Negative = move left  
+    OFFSET_Y: 0   // Positive = move down, Negative = move up
 }
 
 export const SCORE_POPUP =

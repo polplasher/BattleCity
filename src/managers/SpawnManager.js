@@ -17,7 +17,19 @@ class SpawnManager {
 
         this.scoresList = [];
         
+        // Spawner positions loaded from Tiled map
+        this.spawnerPositions = [];
+        
         this.scene.events.on(EVENTS.ENEMY_DIED, this.onEnemyDied, this);
+    }
+
+    /**
+     * Load spawner positions from Tiled map
+     * @param {Array} positions - Array of {x, y} positions
+     */
+    loadSpawnerPositions(positions) {
+        this.spawnerPositions = positions;
+        console.log(`SpawnManager: Loaded ${positions.length} spawner positions`);
     }
 
     startLevel(levelNumber) {
@@ -69,13 +81,15 @@ class SpawnManager {
     spawnNext() {
         const EnemyClass = this.enemyQueue.shift();
         
-        // Posiciones 
-        const pos = SPAWN_CONFIG.POSITIONS[this.currentSpawnIndex];
-        this.currentSpawnIndex = (this.currentSpawnIndex + 1) % SPAWN_CONFIG.POSITIONS.length;
+        // Use spawner positions from Tiled map, fallback to hardcoded if not loaded
+        const positions = this.spawnerPositions.length > 0 
+            ? this.spawnerPositions 
+            : SPAWN_CONFIG.POSITIONS;
+        
+        const pos = positions[this.currentSpawnIndex];
+        this.currentSpawnIndex = (this.currentSpawnIndex + 1) % positions.length;
         
         this.enemyManager.createEnemy(pos.x, pos.y, EnemyClass);
-
-        
     }
 
     onEnemyDied(data) {
